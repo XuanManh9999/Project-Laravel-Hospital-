@@ -1,0 +1,51 @@
+═══════════════════════════════════════════════════════════════
+  HƯỚNG DẪN NHANH CẤU HÌNH FILE .ENV
+═══════════════════════════════════════════════════════════════
+
+BƯỚC 1: Copy file .env.example thành .env
+  → cp .env.example .env
+  Hoặc tạo file .env mới và copy nội dung từ .env.example
+
+BƯỚC 2: Sửa các thông tin sau trong file .env:
+
+┌─────────────────────────────────────────────────────────────┐
+│ 1. DATABASE (MySQL)                                         │
+└─────────────────────────────────────────────────────────────┘
+  DB_DATABASE=hospital_db     ← Tên database (tạo trước trong MySQL)
+  DB_USERNAME=root            ← Username MySQL của bạn
+  DB_PASSWORD=                ← Password MySQL (để trống nếu không có)
+
+┌─────────────────────────────────────────────────────────────┐
+│ 2. VNPAY                                                    │
+└─────────────────────────────────────────────────────────────┘
+  VNPAY_TMN_CODE=your_tmn_code_here
+  VNPAY_HASH_SECRET=your_hash_secret_here
+  
+  → Lấy từ: https://sandbox.vnpayment.vn/
+  → Đăng ký tài khoản merchant để lấy TMN_CODE và HASH_SECRET
+
+┌─────────────────────────────────────────────────────────────┐
+│ 3. MAIL (Gmail)                                             │
+└─────────────────────────────────────────────────────────────┘
+  MAIL_USERNAME=your-email@gmail.com
+  MAIL_PASSWORD=your-app-password
+  
+  → Tạo App Password từ Google Account → Security
+  → Bật 2-Step Verification trước
+
+┌─────────────────────────────────────────────────────────────┐
+│ 4. ZALO CONTACT                                              │
+└─────────────────────────────────────────────────────────────┘
+  ZALO_CONTACT=09xxxxx        ← Số Zalo để liên hệ hoàn tiền
+
+BƯỚC 3: Chạy các lệnh sau:
+
+  php artisan key:generate    ← Tạo APP_KEY tự động
+  php artisan migrate         ← Tạo bảng database
+  php artisan storage:link    ← Tạo link storage
+  php artisan db:seed         ← Tạo admin user (optional)
+
+═══════════════════════════════════════════════════════════════
+  XEM CHI TIẾT: Đọc file ENV_SETUP.md
+═══════════════════════════════════════════════════════════════
+
