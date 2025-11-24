@@ -11,6 +11,7 @@ Hệ thống quản lý lịch hẹn, bác sĩ và dịch vụ cho bệnh viện
 - CRUD bài viết
 - Chấp nhận/từ chối/xóa lịch hẹn
 - Xóa/sửa tài khoản bệnh nhân
+- Quản lý thanh toán (lọc, tìm kiếm, cập nhật trạng thái)
 - Quản lý hoàn tiền
 
 ### Bác sĩ
@@ -89,6 +90,25 @@ npm run build
 ```bash
 php artisan serve
 ```
+
+## Khắc phục lỗi 419 (Page Expired)
+
+- Đảm bảo các biến trong `.env` trỏ đúng domain bạn đang truy cập, ví dụ:
+
+```
+APP_URL=http://127.0.0.1:8000
+SESSION_DOMAIN=127.0.0.1
+SESSION_SECURE_COOKIE=false
+```
+
+- Sau khi chỉnh `.env`, chạy:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+- Khởi động lại server (`php artisan serve`) và làm mới trang đăng nhập. Nếu trình duyệt vẫn giữ phiên cũ, hãy xóa cookie cho `127.0.0.1`.
 
 ## Cấu trúc Database
 

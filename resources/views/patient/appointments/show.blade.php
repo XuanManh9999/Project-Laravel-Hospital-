@@ -44,16 +44,22 @@
 
 <div class="card">
     <div class="card-body">
-        @if($appointment->payment_status != 'paid' && $appointment->status == 'pending')
+        @if($appointment->payment_status !== \App\Models\Appointment::PAYMENT_STATUS_PAID && in_array($appointment->status, ['pending','accepted']))
             <form method="POST" action="{{ route('vnpay.create', $appointment->id) }}" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-credit-card"></i> Thanh toán VNPay
                 </button>
             </form>
+            <div class="alert alert-info mt-3 mb-0">
+                <small>
+                    Bạn sẽ được chuyển hướng tới cổng VNPay để hoàn tất thanh toán.
+                    Sau khi thanh toán thành công, trạng thái sẽ được cập nhật tự động.
+                </small>
+            </div>
         @endif
 
-        @if($appointment->status == 'pending' || $appointment->status == 'accepted')
+        @if(in_array($appointment->status, ['pending','accepted']))
             @if($appointment->canBeCancelled())
                 <form method="POST" action="{{ route('patient.appointments.cancel', $appointment->id) }}" class="d-inline">
                     @csrf

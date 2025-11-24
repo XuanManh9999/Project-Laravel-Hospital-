@@ -127,6 +127,22 @@ class PatientController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
+        $hasConflict = Appointment::where('doctor_id', $validated['doctor_id'])
+            ->whereDate('appointment_date', $validated['appointment_date'])
+            ->where('appointment_time', $validated['appointment_time'])
+            ->whereIn('status', [
+                Appointment::STATUS_PENDING,
+                Appointment::STATUS_ACCEPTED,
+                Appointment::STATUS_COMPLETED,
+            ])
+            ->exists();
+
+        if ($hasConflict) {
+            return back()
+                ->withErrors(['appointment_time' => 'Khung giờ này đã được đặt trước. Vui lòng chọn giờ khác.'])
+                ->withInput();
+        }
+
         $appointment = Appointment::create([
             'patient_id' => auth()->id(),
             'doctor_id' => $validated['doctor_id'],

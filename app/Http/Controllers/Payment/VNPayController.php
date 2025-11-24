@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class VNPayController extends Controller
 {
     public function createPayment(Request $request, $appointmentId)
     {
-        $appointment = Appointment::where('patient_id', auth()->id())
+        $appointment = Appointment::with('service')
+            ->where('patient_id', auth()->id())
             ->findOrFail($appointmentId);
 
-        if ($appointment->payment_status === Payment::STATUS_SUCCESS) {
+        if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID) {
             return back()->withErrors(['error' => 'Lịch hẹn này đã được thanh toán.']);
         }
 
@@ -24,14 +26,29 @@ class VNPayController extends Controller
         $vnp_Url = config('services.vnpay.url');
         $vnp_ReturnUrl = config('services.vnpay.return_url');
 
+        if (!$vnp_TmnCode || !$vnp_HashSecret || !$vnp_Url || !$vnp_ReturnUrl) {
+            Log::error('VNPay configuration is missing', [
+                'tmn' => (bool) $vnp_TmnCode,
+                'hash' => (bool) $vnp_HashSecret,
+                'url' => (bool) $vnp_Url,
+                'return_url' => (bool) $vnp_ReturnUrl,
+            ]);
+
+            return back()->withErrors(['error' => 'VNPay chưa được cấu hình đúng. Vui lòng liên hệ quản trị viên.']);
+        }
+
+        if (!$appointment->service || $appointment->service->price <= 0) {
+            return back()->withErrors(['error' => 'Không thể khởi tạo thanh toán cho dịch vụ này.']);
+        }
+
         $vnp_TxnRef = 'APPT' . $appointment->id . '_' . time();
         $vnp_OrderInfo = 'Thanh toan lich hen #' . $appointment->id;
         $vnp_OrderType = 'other';
-        $vnp_Amount = $appointment->service->price * 100; // VNPay uses cents
+        $vnp_Amount = (int) ($appointment->service->price * 100); // VNPay sử dụng đơn vị đồng * 100
         $vnp_Locale = 'vn';
         $vnp_IpAddr = $request->ip();
 
-        $inputData = array(
+        $inputData = [
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $vnp_TmnCode,
             "vnp_Amount" => $vnp_Amount,
@@ -44,36 +61,23 @@ class VNPayController extends Controller
             "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_ReturnUrl,
             "vnp_TxnRef" => $vnp_TxnRef,
-        );
+        ];
 
         ksort($inputData);
-        $query = "";
-        $i = 0;
-        $hashdata = "";
-        foreach ($inputData as $key => $value) {
-            if ($i == 1) {
-                $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
-            } else {
-                $hashdata .= urlencode($key) . "=" . urlencode($value);
-                $i = 1;
-            }
-            $query .= urlencode($key) . "=" . urlencode($value) . '&';
-        }
+        $hashdata = $this->buildHashData($inputData);
+        $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+        $vnp_Url = $vnp_Url . '?' . http_build_query($inputData) . '&vnp_SecureHash=' . $vnpSecureHash;
 
-        $vnp_Url = $vnp_Url . "?" . $query;
-        if (isset($vnp_HashSecret)) {
-            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-            $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
-        }
-
-        // Create payment record
-        Payment::create([
-            'appointment_id' => $appointment->id,
-            'amount' => $appointment->service->price,
-            'payment_method' => 'vnpay',
-            'transaction_id' => $vnp_TxnRef,
-            'status' => Payment::STATUS_PENDING,
-        ]);
+        Payment::updateOrCreate(
+            ['appointment_id' => $appointment->id],
+            [
+                'amount' => $appointment->service->price,
+                'payment_method' => 'vnpay',
+                'transaction_id' => $vnp_TxnRef,
+                'status' => Payment::STATUS_PENDING,
+                'vnpay_response' => null,
+            ]
+        );
 
         return redirect($vnp_Url);
     }
@@ -83,54 +87,73 @@ class VNPayController extends Controller
         $vnp_HashSecret = config('services.vnpay.hash_secret');
         $vnp_SecureHash = $request->vnp_SecureHash;
 
-        $inputData = array();
+        $inputData = [];
         foreach ($request->all() as $key => $value) {
-            if (substr($key, 0, 4) == "vnp_") {
+            if (Str::startsWith($key, 'vnp_')) {
                 $inputData[$key] = $value;
             }
         }
 
         unset($inputData['vnp_SecureHash']);
         ksort($inputData);
-        $i = 0;
-        $hashData = "";
-        foreach ($inputData as $key => $value) {
-            if ($i == 1) {
-                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
-            } else {
-                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
-                $i = 1;
-            }
-        }
-
+        $hashData = $this->buildHashData($inputData);
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
-        if ($secureHash == $vnp_SecureHash) {
-            if ($request->vnp_ResponseCode == '00') {
-                $transactionId = $request->vnp_TxnRef;
-                $payment = Payment::where('transaction_id', $transactionId)->first();
-
-                if ($payment) {
-                    $payment->update([
-                        'status' => Payment::STATUS_SUCCESS,
-                        'vnpay_response' => $request->all(),
-                    ]);
-
-                    $payment->appointment->update([
-                        'payment_status' => Appointment::PAYMENT_STATUS_PAID,
-                    ]);
-
-                    return redirect()->route('patient.appointments.show', $payment->appointment_id)
-                        ->with('success', 'Thanh toán thành công!');
-                }
-            } else {
-                return redirect()->route('patient.dashboard')
-                    ->withErrors(['error' => 'Thanh toán thất bại: ' . $request->vnp_ResponseCode]);
-            }
-        } else {
-            return redirect()->route('patient.dashboard')
-                ->withErrors(['error' => 'Chữ ký không hợp lệ']);
+        if ($secureHash !== $vnp_SecureHash) {
+            return $this->paymentFailed(null, 'Chữ ký không hợp lệ.');
         }
+
+        $payment = Payment::where('transaction_id', $request->vnp_TxnRef)->first();
+
+        if (!$payment) {
+            Log::warning('Không tìm thấy bản ghi thanh toán cho mã giao dịch.', ['txn' => $request->vnp_TxnRef]);
+            return $this->paymentFailed(null, 'Không tìm thấy giao dịch tương ứng.');
+        }
+
+        if ($request->vnp_ResponseCode === '00') {
+            $payment->update([
+                'status' => Payment::STATUS_SUCCESS,
+                'vnpay_response' => $request->all(),
+            ]);
+
+            $payment->appointment->update([
+                'payment_status' => Appointment::PAYMENT_STATUS_PAID,
+            ]);
+
+            return redirect()
+                ->route('patient.appointments.show', $payment->appointment_id)
+                ->with('success', 'Thanh toán thành công!');
+        }
+
+        $payment->update([
+            'status' => Payment::STATUS_FAILED,
+            'vnpay_response' => $request->all(),
+        ]);
+
+        $payment->appointment->update([
+            'payment_status' => Appointment::PAYMENT_STATUS_PENDING,
+        ]);
+
+        return $this->paymentFailed($payment, 'Thanh toán thất bại: ' . ($request->vnp_Message ?? $request->vnp_ResponseCode));
+    }
+
+    protected function buildHashData(array $inputData): string
+    {
+        $hashData = '';
+        foreach ($inputData as $key => $value) {
+            $hashData .= ($hashData ? '&' : '') . urlencode($key) . '=' . urlencode($value);
+        }
+
+        return $hashData;
+    }
+
+    protected function paymentFailed(?Payment $payment, string $message)
+    {
+        $route = $payment
+            ? route('patient.appointments.show', $payment->appointment_id)
+            : route('patient.history');
+
+        return redirect($route)->withErrors(['error' => $message]);
     }
 }
 

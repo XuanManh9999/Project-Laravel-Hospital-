@@ -6,11 +6,13 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Receptionist\ReceptionistController;
 use App\Http\Controllers\Patient\PatientController;
 use App\Http\Controllers\Payment\VNPayController;
+use App\Http\Controllers\Session\HeartbeatController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +57,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/appointments/{id}/accept', [AdminAppointmentController::class, 'accept'])->name('appointments.accept');
     Route::post('/appointments/{id}/reject', [AdminAppointmentController::class, 'reject'])->name('appointments.reject');
     Route::delete('/appointments/{id}', [AdminAppointmentController::class, 'destroy'])->name('appointments.destroy');
+    
+    // Payment management
+    Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
+    Route::patch('/payments/{payment}/status', [AdminPaymentController::class, 'updateStatus'])->name('payments.update-status');
     
     // Refund management
     Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
@@ -103,4 +110,6 @@ Route::middleware('auth')->prefix('vnpay')->name('vnpay.')->group(function () {
     Route::post('/create/{appointmentId}', [VNPayController::class, 'createPayment'])->name('create');
     Route::get('/return', [VNPayController::class, 'return'])->name('return');
 });
+
+Route::middleware('auth')->post('/session/heartbeat', HeartbeatController::class)->name('session.heartbeat');
 

@@ -290,6 +290,28 @@
             });
         });
     </script>
+    <?php if(auth()->guard()->check()): ?>
+    <script>
+        (function () {
+            const HEARTBEAT_INTERVAL_MS = 5 * 60 * 1000;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
+                return;
+            }
+            const sendHeartbeat = () => {
+                fetch("<?php echo e(route('session.heartbeat')); ?>", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                }).catch(() => {});
+            };
+            sendHeartbeat();
+            setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+        })();
+    </script>
+    <?php endif; ?>
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>

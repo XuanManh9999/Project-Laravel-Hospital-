@@ -4,8 +4,8 @@ use Illuminate\Support\Str;
 
 return [
     'driver' => env('SESSION_DRIVER', 'file'),
-    'lifetime' => env('SESSION_LIFETIME', 120),
-    'expire_on_close' => false,
+    'lifetime' => env('SESSION_LIFETIME', 1440),
+    'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
     'encrypt' => false,
     'files' => storage_path('framework/sessions'),
     'connection' => env('SESSION_CONNECTION'),
