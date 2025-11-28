@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ $appointment->doctor->user->name }}</td>
                                 <td>{{ $appointment->service->name }}</td>
-                                <td>{{ $appointment->appointment_date->format('d/m/Y') }} {{ $appointment->appointment_time }}</td>
+                                <td>{{ $appointment->appointment_date->format('d/m/Y') }} - {{ $appointment->shift_label }}</td>
                                 <td>
                                     <span class="badge bg-success">Đã chấp nhận</span>
                                 </td>

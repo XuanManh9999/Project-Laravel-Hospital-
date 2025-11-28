@@ -32,14 +32,16 @@
                             <td>#{{ $appointment->id }}</td>
                             <td>{{ $appointment->doctor->user->name }}</td>
                             <td>{{ $appointment->service->name }}</td>
-                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} {{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} - {{ $appointment->shift_label }}</td>
                             <td>
-                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'rejected' ? 'danger' : 'warning') }}">
+                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'rejected' ? 'danger' : ($appointment->status == 'completed' ? 'primary' : ($appointment->status == 'cancelled' ? 'secondary' : 'warning')))) }}">
                                     @if($appointment->status == 'pending') Chờ xử lý
                                     @elseif($appointment->status == 'accepted') Đã chấp nhận
+                                    @elseif($appointment->status == 'waiting_examination') Chờ khám
                                     @elseif($appointment->status == 'rejected') Đã từ chối
+                                    @elseif($appointment->status == 'completed') Hoàn thành
                                     @elseif($appointment->status == 'cancelled') Đã hủy
-                                    @else Hoàn thành
+                                    @else {{ $appointment->status }}
                                     @endif
                                 </span>
                             </td>

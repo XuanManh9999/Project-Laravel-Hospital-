@@ -20,7 +20,7 @@
         <li>Bác sĩ: <?php echo e($doctor->name); ?></li>
         <li>Dịch vụ: <?php echo e($appointment->service->name); ?></li>
         <li>Ngày: <?php echo e($appointment->appointment_date->format('d/m/Y')); ?></li>
-        <li>Giờ: <?php echo e($appointment->appointment_time); ?></li>
+        <li>Ca khám: <?php echo e($appointment->shift_label); ?></li>
     </ul>
     
     <p>Trân trọng,<br>Hệ thống Quản lý Bệnh viện</p>

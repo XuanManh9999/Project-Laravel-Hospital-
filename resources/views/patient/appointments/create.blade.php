@@ -44,10 +44,13 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Giờ hẹn</label>
-                    <input type="time" class="form-control @error('appointment_time') is-invalid @enderror" 
-                           name="appointment_time" value="{{ old('appointment_time') }}" required>
-                    @error('appointment_time')
+                    <label class="form-label">Ca khám</label>
+                    <select name="appointment_shift" class="form-select @error('appointment_shift') is-invalid @enderror" required>
+                        <option value="">Chọn ca</option>
+                        <option value="morning" {{ old('appointment_shift') == 'morning' ? 'selected' : '' }}>Ca sáng (8h - 12h)</option>
+                        <option value="afternoon" {{ old('appointment_shift') == 'afternoon' ? 'selected' : '' }}>Ca chiều (13h - 18h)</option>
+                    </select>
+                    @error('appointment_shift')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

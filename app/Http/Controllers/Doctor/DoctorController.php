@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Doctor;
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
 use App\Models\Appointment;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class DoctorController extends Controller
@@ -14,8 +15,9 @@ class DoctorController extends Controller
         $doctor = auth()->user()->doctor;
         $todayAppointments = Appointment::where('doctor_id', $doctor->id)
             ->whereDate('appointment_date', today())
-            ->where('status', 'accepted')
+            ->whereIn('status', [Appointment::STATUS_ACCEPTED, Appointment::STATUS_WAITING_EXAMINATION])
             ->with(['patient', 'service'])
+            ->orderBy('appointment_time')
             ->get();
 
         return view('doctor.dashboard', compact('todayAppointments'));
@@ -110,11 +112,53 @@ class DoctorController extends Controller
         return view('doctor.appointments.index', compact('appointments'));
     }
 
+    public function showAppointment($id)
+    {
+        $doctor = auth()->user()->doctor;
+        $appointment = Appointment::where('doctor_id', $doctor->id)
+            ->with(['patient', 'service'])
+            ->findOrFail($id);
+
+        return view('doctor.appointments.show', compact('appointment'));
+    }
+
     public function acceptAppointment($id)
     {
         $doctor = auth()->user()->doctor;
         $appointment = Appointment::where('doctor_id', $doctor->id)
+            ->with('payment')
             ->findOrFail($id);
+        
+        // Chỉ cho phép chấp nhận khi bệnh nhân đã thanh toán thành công
+        $hasSuccessfulPayment = $appointment->payment
+            && $appointment->payment->status === Payment::STATUS_SUCCESS;
+
+        if (!$hasSuccessfulPayment) {
+            return back()->withErrors(['error' => 'Bệnh nhân chưa thanh toán, không thể chấp nhận lịch hẹn.']);
+        }
+
+        // Xác định ca khám hiện tại (sáng/chiều) dựa trên giờ hẹn
+        $time = $appointment->appointment_time;
+        $isMorning = $time >= Appointment::SHIFT_MORNING_START && $time <= Appointment::SHIFT_MORNING_END;
+
+        $shiftStart = $isMorning ? Appointment::SHIFT_MORNING_START : Appointment::SHIFT_AFTERNOON_START;
+        $shiftEnd = $isMorning ? Appointment::SHIFT_MORNING_END : Appointment::SHIFT_AFTERNOON_END;
+
+        // Đếm số lịch đã được thanh toán (payment_status = paid) và đã được chấp nhận / chờ khám / hoàn thành trong cùng ca
+        $existingPaidConfirmed = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', $appointment->appointment_date)
+            ->whereBetween('appointment_time', [$shiftStart, $shiftEnd])
+            ->whereIn('status', [
+                Appointment::STATUS_ACCEPTED,
+                Appointment::STATUS_WAITING_EXAMINATION,
+                Appointment::STATUS_COMPLETED,
+            ])
+            ->where('payment_status', Appointment::PAYMENT_STATUS_PAID)
+            ->count();
+
+        if ($existingPaidConfirmed >= 3) {
+            return back()->withErrors(['error' => 'Ca khám này đã đủ 3 bệnh nhân đã thanh toán, không thể chấp nhận thêm.']);
+        }
 
         $appointment->update(['status' => Appointment::STATUS_ACCEPTED]);
 
@@ -127,13 +171,78 @@ class DoctorController extends Controller
     {
         $doctor = auth()->user()->doctor;
         $appointment = Appointment::where('doctor_id', $doctor->id)
+            ->with('payment')
             ->findOrFail($id);
 
-        $appointment->update(['status' => Appointment::STATUS_REJECTED]);
+        try {
+            \DB::beginTransaction();
 
-        \App\Jobs\SendAppointmentNotification::dispatch($appointment, 'rejected');
+            // Nếu lịch hẹn đã thanh toán, tạo yêu cầu hoàn tiền
+            if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID && $appointment->payment) {
+                // Kiểm tra xem đã có refund chưa để tránh tạo trùng
+                $existingRefund = \App\Models\Refund::where('appointment_id', $appointment->id)->first();
+                
+                if (!$existingRefund) {
+                    \App\Models\Refund::create([
+                        'appointment_id' => $appointment->id,
+                        'amount' => $appointment->payment->amount,
+                        'reason' => 'Bác sĩ từ chối lịch hẹn',
+                        'status' => \App\Models\Refund::STATUS_PENDING,
+                    ]);
+                }
+            }
 
-        return back()->with('success', 'Từ chối lịch hẹn thành công.');
+            $appointment->update(['status' => Appointment::STATUS_REJECTED]);
+
+            \DB::commit();
+
+            \App\Jobs\SendAppointmentNotification::dispatch($appointment, 'rejected');
+
+            return back()->with('success', 'Từ chối lịch hẹn thành công.' . ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID ? ' Yêu cầu hoàn tiền đã được tạo.' : ''));
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Error rejecting appointment: ' . $e->getMessage(), [
+                'appointment_id' => $appointment->id,
+                'doctor_id' => $doctor->id,
+            ]);
+            return back()->withErrors(['error' => 'Có lỗi xảy ra khi từ chối lịch hẹn. Vui lòng thử lại.']);
+        }
+    }
+
+    public function startExamination($id)
+    {
+        $doctor = auth()->user()->doctor;
+        $appointment = Appointment::where('doctor_id', $doctor->id)
+            ->findOrFail($id);
+
+        if ($appointment->status !== Appointment::STATUS_ACCEPTED) {
+            return back()->withErrors(['error' => 'Chỉ có thể bắt đầu khám với lịch hẹn đã được chấp nhận.']);
+        }
+
+        // Chỉ cho phép bắt đầu khám trong ngày hẹn hoặc sau ngày hẹn
+        if ($appointment->appointment_date->isFuture()) {
+            return back()->withErrors(['error' => 'Chỉ có thể bắt đầu khám trong ngày hẹn hoặc sau ngày hẹn.']);
+        }
+
+        $appointment->update(['status' => Appointment::STATUS_WAITING_EXAMINATION]);
+
+        return back()->with('success', 'Đã đánh dấu bệnh nhân chờ khám.');
+    }
+
+    public function completeAppointment($id)
+    {
+        $doctor = auth()->user()->doctor;
+        $appointment = Appointment::where('doctor_id', $doctor->id)
+            ->findOrFail($id);
+
+        // Cho phép hoàn tất từ trạng thái accepted hoặc waiting_examination
+        if (!in_array($appointment->status, [Appointment::STATUS_ACCEPTED, Appointment::STATUS_WAITING_EXAMINATION])) {
+            return back()->withErrors(['error' => 'Chỉ có thể hoàn tất với lịch hẹn đã được chấp nhận hoặc đang chờ khám.']);
+        }
+
+        $appointment->update(['status' => Appointment::STATUS_COMPLETED]);
+
+        return back()->with('success', 'Đã hoàn tất lịch hẹn.');
     }
 
     public function history()

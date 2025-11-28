@@ -95,7 +95,7 @@
                                 <p class="text-muted mb-1">Thời gian hẹn</p>
                                 <h6 class="fw-semibold mb-0">
                                     {{ optional($payment->appointment->appointment_date)?->format('d/m/Y') }}
-                                    {{ $payment->appointment->appointment_time }}
+                                    - {{ $payment->appointment->shift_label }}
                                 </h6>
                                 <small class="text-muted text-capitalize">Trạng thái: {{ $payment->appointment->status }}</small>
                             </div>

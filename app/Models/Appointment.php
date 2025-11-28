@@ -27,6 +27,7 @@ class Appointment extends Model
 
     const STATUS_PENDING = 'pending';
     const STATUS_ACCEPTED = 'accepted';
+    const STATUS_WAITING_EXAMINATION = 'waiting_examination';
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELLED = 'cancelled';
     const STATUS_COMPLETED = 'completed';
@@ -34,6 +35,11 @@ class Appointment extends Model
     const PAYMENT_STATUS_PENDING = 'pending';
     const PAYMENT_STATUS_PAID = 'paid';
     const PAYMENT_STATUS_REFUNDED = 'refunded';
+
+    public const SHIFT_MORNING_START = '08:00:00';
+    public const SHIFT_MORNING_END = '12:00:00';
+    public const SHIFT_AFTERNOON_START = '13:00:00';
+    public const SHIFT_AFTERNOON_END = '18:00:00';
 
     public function patient()
     {
@@ -64,6 +70,31 @@ class Appointment extends Model
     {
         $minDate = Carbon::now()->addDays(3);
         return $this->appointment_date->gte($minDate);
+    }
+
+    public function getShiftLabelAttribute(): string
+    {
+        if (!$this->appointment_time) {
+            return '';
+        }
+
+        $time = Carbon::createFromFormat('H:i:s', $this->appointment_time);
+
+        if ($time->betweenIncluded(
+            Carbon::createFromTimeString(self::SHIFT_MORNING_START),
+            Carbon::createFromTimeString(self::SHIFT_MORNING_END)
+        )) {
+            return 'Ca sáng (8h - 12h)';
+        }
+
+        if ($time->betweenIncluded(
+            Carbon::createFromTimeString(self::SHIFT_AFTERNOON_START),
+            Carbon::createFromTimeString(self::SHIFT_AFTERNOON_END)
+        )) {
+            return 'Ca chiều (13h - 18h)';
+        }
+
+        return $time->format('H:i');
     }
 }
 

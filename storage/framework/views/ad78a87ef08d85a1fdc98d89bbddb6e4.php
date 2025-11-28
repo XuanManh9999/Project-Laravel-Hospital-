@@ -72,17 +72,20 @@ unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Giờ hẹn</label>
-                    <input type="time" class="form-control <?php $__errorArgs = ['appointment_time'];
+                    <label class="form-label">Ca khám</label>
+                    <select name="appointment_shift" class="form-select <?php $__errorArgs = ['appointment_shift'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" 
-                           name="appointment_time" value="<?php echo e(old('appointment_time')); ?>" required>
-                    <?php $__errorArgs = ['appointment_time'];
+unset($__errorArgs, $__bag); ?>" required>
+                        <option value="">Chọn ca</option>
+                        <option value="morning" <?php echo e(old('appointment_shift') == 'morning' ? 'selected' : ''); ?>>Ca sáng (8h - 12h)</option>
+                        <option value="afternoon" <?php echo e(old('appointment_shift') == 'afternoon' ? 'selected' : ''); ?>>Ca chiều (13h - 18h)</option>
+                    </select>
+                    <?php $__errorArgs = ['appointment_shift'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

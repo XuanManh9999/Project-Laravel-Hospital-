@@ -31,7 +31,7 @@
                                 <td>{{ $appointment->patient->name }}</td>
                                 <td>{{ $appointment->doctor->user->name }}</td>
                                 <td>{{ $appointment->service->name }}</td>
-                                <td>{{ $appointment->appointment_time }}</td>
+                                <td>{{ $appointment->shift_label }}</td>
                                 <td>
                                     <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : 'warning' }}">
                                         {{ $appointment->status == 'accepted' ? 'Đã chấp nhận' : 'Chờ xử lý' }}

@@ -8,21 +8,31 @@
         <h2>Lịch hẹn phòng khám</h2>
     </div>
 
-    <div class="card">
-    <div class="card-body">
+        <div class="card">
+        <div class="card-body">
         <form method="GET" class="mb-3">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="date" name="date" class="form-control" value="{{ request('date') }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select name="status" class="form-select">
                         <option value="">Tất cả trạng thái</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
                         <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Đã chấp nhận</option>
+                        <option value="waiting_examination" {{ request('status') == 'waiting_examination' ? 'selected' : '' }}>Chờ khám</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
+                    <input type="text" name="patient_name" class="form-control" placeholder="Tìm theo tên bệnh nhân" value="{{ request('patient_name') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="doctor_name" class="form-control" placeholder="Tìm theo tên bác sĩ" value="{{ request('doctor_name') }}">
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-2 ms-auto">
                     <button type="submit" class="btn btn-primary w-100">Lọc</button>
                 </div>
             </div>
@@ -45,10 +55,15 @@
                             <td>{{ $appointment->patient->name }}</td>
                             <td>{{ $appointment->doctor->user->name }}</td>
                             <td>{{ $appointment->service->name }}</td>
-                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} {{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} - {{ $appointment->shift_label }}</td>
                             <td>
-                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : 'warning' }}">
-                                    {{ $appointment->status == 'accepted' ? 'Đã chấp nhận' : 'Chờ xử lý' }}
+                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'completed' ? 'primary' : 'warning')) }}">
+                                    @if($appointment->status == 'pending') Chờ xử lý
+                                    @elseif($appointment->status == 'accepted') Đã chấp nhận
+                                    @elseif($appointment->status == 'waiting_examination') Chờ khám
+                                    @elseif($appointment->status == 'completed') Hoàn thành
+                                    @else {{ $appointment->status }}
+                                    @endif
                                 </span>
                             </td>
                         </tr>
@@ -62,8 +77,8 @@
         </div>
 
         {{ $appointments->links() }}
-    </div>
-    </div>
+        </div>
+        </div>
 </div>
 @endsection
 

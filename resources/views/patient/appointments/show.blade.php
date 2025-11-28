@@ -16,16 +16,18 @@
                 <p><strong>Bác sĩ:</strong> {{ $appointment->doctor->user->name }}</p>
                 <p><strong>Dịch vụ:</strong> {{ $appointment->service->name }}</p>
                 <p><strong>Ngày hẹn:</strong> {{ $appointment->appointment_date->format('d/m/Y') }}</p>
-                <p><strong>Giờ hẹn:</strong> {{ $appointment->appointment_time }}</p>
+                <p><strong>Ca khám:</strong> {{ $appointment->shift_label }}</p>
             </div>
             <div class="col-md-6">
                 <p><strong>Trạng thái:</strong> 
-                    <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'rejected' ? 'danger' : 'warning') }}">
+                    <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'rejected' ? 'danger' : ($appointment->status == 'completed' ? 'primary' : ($appointment->status == 'cancelled' ? 'secondary' : 'warning')))) }}">
                         @if($appointment->status == 'pending') Chờ xử lý
                         @elseif($appointment->status == 'accepted') Đã chấp nhận
+                        @elseif($appointment->status == 'waiting_examination') Chờ khám
                         @elseif($appointment->status == 'rejected') Đã từ chối
+                        @elseif($appointment->status == 'completed') Hoàn thành
                         @elseif($appointment->status == 'cancelled') Đã hủy
-                        @else Hoàn thành
+                        @else {{ $appointment->status }}
                         @endif
                     </span>
                 </p>

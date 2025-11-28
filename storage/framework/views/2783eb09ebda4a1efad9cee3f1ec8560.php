@@ -16,16 +16,19 @@
                 <p><strong>Bác sĩ:</strong> <?php echo e($appointment->doctor->user->name); ?></p>
                 <p><strong>Dịch vụ:</strong> <?php echo e($appointment->service->name); ?></p>
                 <p><strong>Ngày hẹn:</strong> <?php echo e($appointment->appointment_date->format('d/m/Y')); ?></p>
-                <p><strong>Giờ hẹn:</strong> <?php echo e($appointment->appointment_time); ?></p>
+                <p><strong>Ca khám:</strong> <?php echo e($appointment->shift_label); ?></p>
             </div>
             <div class="col-md-6">
                 <p><strong>Trạng thái:</strong> 
-                    <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : ($appointment->status == 'rejected' ? 'danger' : 'warning')); ?>">
+                    <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'rejected' ? 'danger' : ($appointment->status == 'completed' ? 'primary' : ($appointment->status == 'cancelled' ? 'secondary' : 'warning'))))); ?>">
                         <?php if($appointment->status == 'pending'): ?> Chờ xử lý
                         <?php elseif($appointment->status == 'accepted'): ?> Đã chấp nhận
+                        <?php elseif($appointment->status == 'waiting_examination'): ?> Chờ khám
                         <?php elseif($appointment->status == 'rejected'): ?> Đã từ chối
+                        <?php elseif($appointment->status == 'completed'): ?> Hoàn thành
                         <?php elseif($appointment->status == 'cancelled'): ?> Đã hủy
-                        <?php else: ?> Hoàn thành
+                        <?php else: ?> <?php echo e($appointment->status); ?>
+
                         <?php endif; ?>
                     </span>
                 </p>

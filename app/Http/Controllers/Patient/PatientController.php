@@ -123,34 +123,47 @@ class PatientController extends Controller
             'doctor_id' => 'required|exists:doctors,id',
             'service_id' => 'required|exists:services,id',
             'appointment_date' => 'required|date|after:' . Carbon::now()->addDays(2)->format('Y-m-d') . '|before:' . Carbon::now()->addWeeks(2)->format('Y-m-d'),
-            'appointment_time' => 'required|date_format:H:i',
+            'appointment_shift' => 'required|in:morning,afternoon',
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $hasConflict = Appointment::where('doctor_id', $validated['doctor_id'])
-            ->whereDate('appointment_date', $validated['appointment_date'])
-            ->where('appointment_time', $validated['appointment_time'])
-            ->whereIn('status', [
-                Appointment::STATUS_PENDING,
-                Appointment::STATUS_ACCEPTED,
-                Appointment::STATUS_COMPLETED,
-            ])
-            ->exists();
+        $shiftStart = $validated['appointment_shift'] === 'morning'
+            ? Appointment::SHIFT_MORNING_START
+            : Appointment::SHIFT_AFTERNOON_START;
 
-        if ($hasConflict) {
+        $shiftEnd = $validated['appointment_shift'] === 'morning'
+            ? Appointment::SHIFT_MORNING_END
+            : Appointment::SHIFT_AFTERNOON_END;
+
+        // Giới hạn theo các lịch đã thanh toán (payment_status = paid) trong cùng ca,
+        // bất kể đã được bác sĩ chấp nhận hay chưa (trừ khi đã hủy hoặc bị từ chối / hoàn tiền)
+        $existingPaidConfirmed = Appointment::where('doctor_id', $validated['doctor_id'])
+            ->whereDate('appointment_date', $validated['appointment_date'])
+            ->whereNotIn('status', [
+                Appointment::STATUS_CANCELLED,
+                Appointment::STATUS_REJECTED,
+            ])
+            ->whereBetween('appointment_time', [$shiftStart, $shiftEnd])
+            ->where('payment_status', Appointment::PAYMENT_STATUS_PAID)
+            ->count();
+
+        if ($existingPaidConfirmed >= 3) {
             return back()
-                ->withErrors(['appointment_time' => 'Khung giờ này đã được đặt trước. Vui lòng chọn giờ khác.'])
+                ->withErrors(['appointment_shift' => 'Ca khám này của bác sĩ đã đủ 3 bệnh nhân đã thanh toán, vui lòng chọn ca khác hoặc ngày khác.'])
                 ->withInput();
         }
+
+        $appointmentTime = $validated['appointment_shift'] === 'morning' ? '09:00:00' : '15:00:00';
 
         $appointment = Appointment::create([
             'patient_id' => auth()->id(),
             'doctor_id' => $validated['doctor_id'],
             'service_id' => $validated['service_id'],
             'appointment_date' => $validated['appointment_date'],
-            'appointment_time' => $validated['appointment_time'],
+            'appointment_time' => $appointmentTime,
             'notes' => $validated['notes'] ?? null,
             'status' => Appointment::STATUS_PENDING,
+            'payment_status' => Appointment::PAYMENT_STATUS_PENDING,
         ]);
 
         return redirect()->route('patient.appointments.show', $appointment->id)

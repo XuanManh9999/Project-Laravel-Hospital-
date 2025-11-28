@@ -92,7 +92,19 @@ class ReceptionistController extends Controller
             $query->where('status', $request->status);
         }
 
-        $appointments = $query->latest()->paginate(15);
+        if ($request->filled('patient_name')) {
+            $query->whereHas('patient', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->patient_name . '%');
+            });
+        }
+
+        if ($request->filled('doctor_name')) {
+            $query->whereHas('doctor.user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->doctor_name . '%');
+            });
+        }
+
+        $appointments = $query->latest()->paginate(15)->withQueryString();
 
         return view('receptionist.appointments.index', compact('appointments'));
     }

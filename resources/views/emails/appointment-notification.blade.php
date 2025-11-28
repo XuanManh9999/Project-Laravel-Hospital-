@@ -20,7 +20,7 @@
         <li>Bác sĩ: {{ $doctor->name }}</li>
         <li>Dịch vụ: {{ $appointment->service->name }}</li>
         <li>Ngày: {{ $appointment->appointment_date->format('d/m/Y') }}</li>
-        <li>Giờ: {{ $appointment->appointment_time }}</li>
+        <li>Ca khám: {{ $appointment->shift_label }}</li>
     </ul>
     
     <p>Trân trọng,<br>Hệ thống Quản lý Bệnh viện</p>

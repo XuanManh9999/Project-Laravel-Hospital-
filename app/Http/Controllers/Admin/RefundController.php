@@ -66,5 +66,58 @@ class RefundController extends Controller
 
         return back()->with('success', 'Từ chối hoàn tiền thành công.');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:process,reject',
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:refunds,id',
+            'reason_bulk' => 'nullable|string|max:1000',
+        ]);
+
+        $refunds = Refund::with('appointment')
+            ->whereIn('id', $validated['ids'])
+            ->where('status', Refund::STATUS_PENDING)
+            ->get();
+
+        $processedCount = 0;
+
+        foreach ($refunds as $refund) {
+            if ($validated['action'] === 'process') {
+                $refund->update([
+                    'status' => Refund::STATUS_PROCESSED,
+                    'processed_by' => auth()->id(),
+                    'processed_at' => now(),
+                ]);
+
+                $appointment = $refund->appointment;
+                if ($appointment) {
+                    $appointment->update([
+                        'payment_status' => \App\Models\Appointment::PAYMENT_STATUS_REFUNDED,
+                    ]);
+                }
+            } else {
+                // reject
+                $refund->update([
+                    'status' => Refund::STATUS_REJECTED,
+                    'processed_by' => auth()->id(),
+                    'reason' => $validated['reason_bulk'] ?: ($refund->reason ?: 'Không đủ điều kiện hoàn tiền'),
+                ]);
+            }
+
+            $processedCount++;
+        }
+
+        if ($processedCount === 0) {
+            return back()->withErrors(['error' => 'Không có yêu cầu hoàn tiền hợp lệ để xử lý.']);
+        }
+
+        $message = $validated['action'] === 'process'
+            ? "Đã xử lý hoàn tiền cho {$processedCount} yêu cầu."
+            : "Đã từ chối {$processedCount} yêu cầu hoàn tiền.";
+
+        return back()->with('success', $message);
+    }
 }
 

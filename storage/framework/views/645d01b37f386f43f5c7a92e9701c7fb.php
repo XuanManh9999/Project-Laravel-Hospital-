@@ -82,14 +82,17 @@
                             <td><?php echo e($appointment->patient->name); ?></td>
                             <td><?php echo e($appointment->doctor->user->name); ?></td>
                             <td><?php echo e($appointment->service->name); ?></td>
-                            <td><?php echo e($appointment->appointment_date->format('d/m/Y')); ?> <?php echo e($appointment->appointment_time); ?></td>
+                            <td><?php echo e($appointment->appointment_date->format('d/m/Y')); ?> - <?php echo e($appointment->shift_label); ?></td>
                             <td>
-                                <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : ($appointment->status == 'rejected' ? 'danger' : 'warning')); ?>">
+                                <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'rejected' ? 'danger' : ($appointment->status == 'completed' ? 'primary' : ($appointment->status == 'cancelled' ? 'secondary' : 'warning'))))); ?>">
                                     <?php if($appointment->status == 'pending'): ?> Chờ xử lý
                                     <?php elseif($appointment->status == 'accepted'): ?> Đã chấp nhận
+                                    <?php elseif($appointment->status == 'waiting_examination'): ?> Chờ khám
                                     <?php elseif($appointment->status == 'rejected'): ?> Đã từ chối
+                                    <?php elseif($appointment->status == 'completed'): ?> Hoàn thành
                                     <?php elseif($appointment->status == 'cancelled'): ?> Đã hủy
-                                    <?php else: ?> Hoàn thành
+                                    <?php else: ?> <?php echo e($appointment->status); ?>
+
                                     <?php endif; ?>
                                 </span>
                             </td>

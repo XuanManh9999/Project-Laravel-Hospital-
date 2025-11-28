@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', $post->title); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -50,25 +48,7 @@
 
                     </div>
 
-                    <hr class="my-4">
-
-                    <!-- Share buttons -->
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="text-muted">Chia sẻ:</span>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo e(urlencode(url()->current())); ?>" 
-                           target="_blank" 
-                           class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-facebook"></i> Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url=<?php echo e(urlencode(url()->current())); ?>&text=<?php echo e(urlencode($post->title)); ?>" 
-                           target="_blank" 
-                           class="btn btn-sm btn-outline-info">
-                            <i class="bi bi-twitter"></i> Twitter
-                        </a>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()">
-                            <i class="bi bi-link-45deg"></i> Copy link
-                        </button>
-                    </div>
+                    <!-- End content -->
                 </div>
             </article>
 
@@ -203,25 +183,6 @@
 </style>
 <?php $__env->stopPush(); ?>
 
-<?php $__env->startPush('scripts'); ?>
-<script>
-    function copyToClipboard() {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url).then(function() {
-            alert('Đã copy link vào clipboard!');
-        }, function() {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = url;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            alert('Đã copy link vào clipboard!');
-        });
-    }
-</script>
-<?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
 
 

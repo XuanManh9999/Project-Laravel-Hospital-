@@ -25,7 +25,7 @@
                         <tr>
                             <td>{{ $appointment->patient->name }}</td>
                             <td>{{ $appointment->service->name }}</td>
-                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} {{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->appointment_date->format('d/m/Y') }} - {{ $appointment->shift_label }}</td>
                             <td>
                                 <span class="badge bg-{{ $appointment->status == 'completed' ? 'success' : 'secondary' }}">
                                     {{ $appointment->status == 'completed' ? 'Hoàn thành' : 'Đã hủy' }}

@@ -4083,3 +4083,94 @@
 [2025-11-24 22:15:21] local.INFO: User logged in {"user_id":3,"email":"doctor2@hospital.com"} 
 [2025-11-24 22:17:35] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
 [2025-11-24 22:18:15] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
+[2025-11-28 18:43:03] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 
+[2025-11-28 18:54:46] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 
+[2025-11-28 18:55:17] local.ERROR: Expected response code "250" but got code "530", with message "530-5.7.0 Authentication Required. For more information, go to
+530 5.7.0  https://support.google.com/accounts/troubleshooter/2402620. d2e1a72fcca58-7d1516f6609sm4833750b3a.15 - gsmtp". {"userId":2,"exception":"[object] (Symfony\\Component\\Mailer\\Exception\\UnexpectedResponseException(code: 530): Expected response code \"250\" but got code \"530\", with message \"530-5.7.0 Authentication Required. For more information, go to
+
+530 5.7.0  https://support.google.com/accounts/troubleshooter/2402620. d2e1a72fcca58-7d1516f6609sm4833750b3a.15 - gsmtp\". at D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\SmtpTransport.php:327)
+[stacktrace]
+#0 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\SmtpTransport.php(186): Symfony\\Component\\Mailer\\Transport\\Smtp\\SmtpTransport->assertResponseCode('530-5.7.0 Authe...', Array)
+#1 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\EsmtpTransport.php(118): Symfony\\Component\\Mailer\\Transport\\Smtp\\SmtpTransport->executeCommand('MAIL FROM:<nore...', Array)
+#2 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\SmtpTransport.php(248): Symfony\\Component\\Mailer\\Transport\\Smtp\\EsmtpTransport->executeCommand('MAIL FROM:<nore...', Array)
+#3 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\SmtpTransport.php(203): Symfony\\Component\\Mailer\\Transport\\Smtp\\SmtpTransport->doMailFromCommand('noreply@hospita...')
+#4 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\AbstractTransport.php(69): Symfony\\Component\\Mailer\\Transport\\Smtp\\SmtpTransport->doSend(Object(Symfony\\Component\\Mailer\\SentMessage))
+#5 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\symfony\\mailer\\Transport\\Smtp\\SmtpTransport.php(137): Symfony\\Component\\Mailer\\Transport\\AbstractTransport->send(Object(Symfony\\Component\\Mime\\Email), Object(Symfony\\Component\\Mailer\\DelayedEnvelope))
+#6 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Mail\\Mailer.php(573): Symfony\\Component\\Mailer\\Transport\\Smtp\\SmtpTransport->send(Object(Symfony\\Component\\Mime\\Email), Object(Symfony\\Component\\Mailer\\DelayedEnvelope))
+#7 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Mail\\Mailer.php(335): Illuminate\\Mail\\Mailer->sendSymfonyMessage(Object(Symfony\\Component\\Mime\\Email))
+#8 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Mail\\MailManager.php(592): Illuminate\\Mail\\Mailer->send('emails.appointm...', Array, Object(Closure))
+#9 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Facades\\Facade.php(355): Illuminate\\Mail\\MailManager->__call('send', Array)
+#10 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\app\\Jobs\\SendAppointmentNotification.php(35): Illuminate\\Support\\Facades\\Facade::__callStatic('send', Array)
+#11 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): App\\Jobs\\SendAppointmentNotification->handle()
+#12 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#13 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#14 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#15 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#16 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(128): Illuminate\\Container\\Container->call(Array)
+#17 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Bus\\Dispatcher->Illuminate\\Bus\\{closure}(Object(App\\Jobs\\SendAppointmentNotification))
+#18 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Jobs\\SendAppointmentNotification))
+#19 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(132): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#20 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(123): Illuminate\\Bus\\Dispatcher->dispatchNow(Object(App\\Jobs\\SendAppointmentNotification), false)
+#21 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Queue\\CallQueuedHandler->Illuminate\\Queue\\{closure}(Object(App\\Jobs\\SendAppointmentNotification))
+#22 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Jobs\\SendAppointmentNotification))
+#23 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(122): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#24 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(70): Illuminate\\Queue\\CallQueuedHandler->dispatchThroughMiddleware(Object(Illuminate\\Queue\\Jobs\\SyncJob), Object(App\\Jobs\\SendAppointmentNotification))
+#25 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Jobs\\Job.php(102): Illuminate\\Queue\\CallQueuedHandler->call(Object(Illuminate\\Queue\\Jobs\\SyncJob), Array)
+#26 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\SyncQueue.php(43): Illuminate\\Queue\\Jobs\\Job->fire()
+#27 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(254): Illuminate\\Queue\\SyncQueue->push(Object(App\\Jobs\\SendAppointmentNotification))
+#28 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(230): Illuminate\\Bus\\Dispatcher->pushCommandToQueue(Object(Illuminate\\Queue\\SyncQueue), Object(App\\Jobs\\SendAppointmentNotification))
+#29 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(77): Illuminate\\Bus\\Dispatcher->dispatchToQueue(Object(App\\Jobs\\SendAppointmentNotification))
+#30 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bus\\PendingDispatch.php(193): Illuminate\\Bus\\Dispatcher->dispatch(Object(App\\Jobs\\SendAppointmentNotification))
+#31 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bus\\Dispatchable.php(19): Illuminate\\Foundation\\Bus\\PendingDispatch->__destruct()
+#32 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\app\\Http\\Controllers\\Doctor\\DoctorController.php(121): App\\Jobs\\SendAppointmentNotification::dispatch(Object(App\\Models\\Appointment), 'accepted')
+#33 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(46): App\\Http\\Controllers\\Doctor\\DoctorController->acceptAppointment('5')
+#34 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Doctor\\DoctorController), 'acceptAppointme...')
+#35 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#36 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(806): Illuminate\\Routing\\Route->run()
+#37 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#38 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\app\\Http\\Middleware\\CheckRole.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#39 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\CheckRole->handle(Object(Illuminate\\Http\\Request), Object(Closure), 'doctor')
+#40 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#41 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#42 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#43 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#44 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#45 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#46 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#47 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#48 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#49 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#50 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#51 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#52 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#53 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#54 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#55 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#56 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#57 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#58 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#59 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#60 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#61 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#62 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#64 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#65 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#66 D:\\workspace\\DACN\\WEBSITE_BENH_VIEN\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\workspace\\\\DA...')
+#67 {main}
+"} 
+[2025-11-28 19:06:56] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 19:17:47] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 
+[2025-11-28 19:19:35] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 
+[2025-11-28 19:29:52] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 
+[2025-11-28 19:30:17] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 19:51:48] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 
+[2025-11-28 19:53:10] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 
+[2025-11-28 19:53:46] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 19:57:04] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 
+[2025-11-28 19:58:24] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 
+[2025-11-28 19:59:01] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 20:04:59] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 20:05:55] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
+[2025-11-28 20:22:59] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-28 20:25:33] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 

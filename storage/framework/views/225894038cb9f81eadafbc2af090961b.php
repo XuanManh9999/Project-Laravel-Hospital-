@@ -8,21 +8,31 @@
         <h2>Lịch hẹn phòng khám</h2>
     </div>
 
-    <div class="card">
-    <div class="card-body">
+        <div class="card">
+        <div class="card-body">
         <form method="GET" class="mb-3">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="date" name="date" class="form-control" value="<?php echo e(request('date')); ?>">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select name="status" class="form-select">
                         <option value="">Tất cả trạng thái</option>
                         <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Chờ xử lý</option>
                         <option value="accepted" <?php echo e(request('status') == 'accepted' ? 'selected' : ''); ?>>Đã chấp nhận</option>
+                        <option value="waiting_examination" <?php echo e(request('status') == 'waiting_examination' ? 'selected' : ''); ?>>Chờ khám</option>
+                        <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Hoàn thành</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
+                    <input type="text" name="patient_name" class="form-control" placeholder="Tìm theo tên bệnh nhân" value="<?php echo e(request('patient_name')); ?>">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="doctor_name" class="form-control" placeholder="Tìm theo tên bác sĩ" value="<?php echo e(request('doctor_name')); ?>">
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-2 ms-auto">
                     <button type="submit" class="btn btn-primary w-100">Lọc</button>
                 </div>
             </div>
@@ -45,11 +55,16 @@
                             <td><?php echo e($appointment->patient->name); ?></td>
                             <td><?php echo e($appointment->doctor->user->name); ?></td>
                             <td><?php echo e($appointment->service->name); ?></td>
-                            <td><?php echo e($appointment->appointment_date->format('d/m/Y')); ?> <?php echo e($appointment->appointment_time); ?></td>
+                            <td><?php echo e($appointment->appointment_date->format('d/m/Y')); ?> - <?php echo e($appointment->shift_label); ?></td>
                             <td>
-                                <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : 'warning'); ?>">
-                                    <?php echo e($appointment->status == 'accepted' ? 'Đã chấp nhận' : 'Chờ xử lý'); ?>
+                                <span class="badge bg-<?php echo e($appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'completed' ? 'primary' : 'warning'))); ?>">
+                                    <?php if($appointment->status == 'pending'): ?> Chờ xử lý
+                                    <?php elseif($appointment->status == 'accepted'): ?> Đã chấp nhận
+                                    <?php elseif($appointment->status == 'waiting_examination'): ?> Chờ khám
+                                    <?php elseif($appointment->status == 'completed'): ?> Hoàn thành
+                                    <?php else: ?> <?php echo e($appointment->status); ?>
 
+                                    <?php endif; ?>
                                 </span>
                             </td>
                         </tr>
@@ -64,8 +79,8 @@
 
         <?php echo e($appointments->links()); ?>
 
-    </div>
-    </div>
+        </div>
+        </div>
 </div>
 <?php $__env->stopSection(); ?>
 

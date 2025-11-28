@@ -67,6 +67,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
     Route::post('/refunds/{id}/process', [RefundController::class, 'process'])->name('refunds.process');
     Route::post('/refunds/{id}/reject', [RefundController::class, 'reject'])->name('refunds.reject');
+    Route::post('/refunds/bulk-action', [RefundController::class, 'bulkAction'])->name('refunds.bulk-action');
 });
 
 // Doctor routes
@@ -76,8 +77,11 @@ Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->g
     Route::put('/profile', [DoctorController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-password', [DoctorController::class, 'changePassword'])->name('profile.change-password');
     Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments.index');
+    Route::get('/appointments/{id}', [DoctorController::class, 'showAppointment'])->name('appointments.show');
     Route::post('/appointments/{id}/accept', [DoctorController::class, 'acceptAppointment'])->name('appointments.accept');
     Route::post('/appointments/{id}/reject', [DoctorController::class, 'rejectAppointment'])->name('appointments.reject');
+    Route::post('/appointments/{id}/start-examination', [DoctorController::class, 'startExamination'])->name('appointments.start-examination');
+    Route::post('/appointments/{id}/complete', [DoctorController::class, 'completeAppointment'])->name('appointments.complete');
     Route::get('/history', [DoctorController::class, 'history'])->name('history');
 });
 
