@@ -12,10 +12,10 @@
     <div class="card-body">
         <form method="GET" class="mb-3">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="date" name="date" class="form-control" value="<?php echo e(request('date')); ?>">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select name="status" class="form-select">
                         <option value="">Tất cả trạng thái</option>
                         <option value="pending" <?php echo e(request('status') == 'pending' ? 'selected' : ''); ?>>Chờ xử lý</option>
@@ -26,8 +26,18 @@
                         <option value="cancelled" <?php echo e(request('status') == 'cancelled' ? 'selected' : ''); ?>>Đã hủy</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                <div class="col-md-3">
+                    <input type="text" name="patient_name" class="form-control" placeholder="Tìm kiếm theo tên bệnh nhân" value="<?php echo e(request('patient_name')); ?>">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                    <?php if(request()->hasAny(['date', 'status', 'patient_name'])): ?>
+                        <a href="<?php echo e(route('doctor.appointments.index')); ?>" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="bi bi-x-circle"></i> Xóa lọc
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </form>

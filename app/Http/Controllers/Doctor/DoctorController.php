@@ -107,7 +107,13 @@ class DoctorController extends Controller
             $query->where('status', $request->status);
         }
 
-        $appointments = $query->latest()->paginate(15);
+        if ($request->patient_name) {
+            $query->whereHas('patient', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->patient_name . '%');
+            });
+        }
+
+        $appointments = $query->latest()->paginate(15)->withQueryString();
 
         return view('doctor.appointments.index', compact('appointments'));
     }

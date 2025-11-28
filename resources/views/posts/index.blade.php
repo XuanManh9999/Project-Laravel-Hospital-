@@ -54,8 +54,10 @@
     </div>
 
     @if($posts->hasPages())
-        <div class="mt-5">
-            {{ $posts->links() }}
+        <div class="mt-5 d-flex justify-content-center">
+            <div class="w-100">
+                {{ $posts->links() }}
+            </div>
         </div>
     @endif
 </div>
@@ -71,6 +73,32 @@
     }
     .card-title a:hover {
         color: #667eea !important;
+    }
+    /* Pagination styles */
+    .pagination {
+        margin: 0;
+        justify-content: center;
+    }
+    .pagination .page-link {
+        color: #667eea;
+        border-color: #dee2e6;
+        padding: 0.5rem 0.75rem;
+    }
+    .pagination .page-link:hover {
+        color: #764ba2;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+    }
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
     }
 </style>
 @endpush

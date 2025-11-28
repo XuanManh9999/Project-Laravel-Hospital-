@@ -4174,3 +4174,4 @@
 [2025-11-28 20:05:55] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
 [2025-11-28 20:22:59] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
 [2025-11-28 20:25:33] local.INFO: User logged in {"user_id":8,"email":"patient1@example.com"} 
+[2025-11-28 20:51:54] local.INFO: User logged in {"user_id":2,"email":"doctor1@hospital.com"} 

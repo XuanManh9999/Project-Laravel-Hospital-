@@ -9,7 +9,6 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Receptionist;
 use App\Models\Service;
-use App\Models\Post;
 
 class DatabaseSeeder extends Seeder
 {
@@ -216,60 +215,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Tạo Bài viết
-        $posts = [
-            [
-                'title' => '10 cách phòng ngừa bệnh tim mạch hiệu quả',
-                'content' => 'Bệnh tim mạch là một trong những nguyên nhân gây tử vong hàng đầu. Dưới đây là 10 cách phòng ngừa hiệu quả:
-
-1. Duy trì chế độ ăn uống lành mạnh
-2. Tập thể dục thường xuyên
-3. Kiểm soát cân nặng
-4. Bỏ thuốc lá
-5. Hạn chế rượu bia
-6. Quản lý căng thẳng
-7. Kiểm tra sức khỏe định kỳ
-8. Kiểm soát huyết áp
-9. Kiểm soát cholesterol
-10. Ngủ đủ giấc
-
-Hãy thực hiện các biện pháp trên để bảo vệ sức khỏe tim mạch của bạn.',
-                'status' => 'published',
-                'author_id' => $admin->id,
-            ],
-            [
-                'title' => 'Dinh dưỡng cho trẻ em phát triển toàn diện',
-                'content' => 'Dinh dưỡng đóng vai trò quan trọng trong sự phát triển của trẻ em. Các bậc phụ huynh cần chú ý:
-
-- Cung cấp đầy đủ các nhóm chất: đạm, béo, đường, vitamin và khoáng chất
-- Cho trẻ ăn đa dạng các loại thực phẩm
-- Hạn chế đồ ngọt và thức ăn nhanh
-- Khuyến khích trẻ uống đủ nước
-- Tạo thói quen ăn uống đúng giờ
-
-Hãy tham khảo ý kiến bác sĩ dinh dưỡng để có chế độ ăn phù hợp cho con bạn.',
-                'status' => 'published',
-                'author_id' => $admin->id,
-            ],
-            [
-                'title' => 'Những dấu hiệu cảnh báo bệnh tiểu đường',
-                'content' => 'Bệnh tiểu đường có thể được phát hiện sớm thông qua các dấu hiệu sau:
-
-- Khát nước và đi tiểu nhiều
-- Mệt mỏi không rõ nguyên nhân
-- Sụt cân đột ngột
-- Vết thương lâu lành
-- Mờ mắt
-- Tê bì chân tay
-
-Nếu bạn có các dấu hiệu trên, hãy đến khám bác sĩ để được chẩn đoán và điều trị kịp thời.',
-                'status' => 'published',
-                'author_id' => $admin->id,
-            ],
-        ];
-
-        foreach ($posts as $post) {
-            Post::create($post);
-        }
+        $this->call(PostSeeder::class);
 
         $this->command->info('Đã tạo dữ liệu mẫu thành công!');
         $this->command->info('Admin: admin@hospital.com / password');
