@@ -11,6 +11,18 @@
 
     <div class="card mb-4">
     <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 text-center mb-3 mb-md-0">
+                @if($doctor->avatar)
+                    <img src="{{ $doctor->avatar }}" alt="{{ $doctor->user->name }}" 
+                         class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd;">
+                @else
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                        <i class="bi bi-person-badge display-4 text-primary"></i>
+                    </div>
+                @endif
+            </div>
+            <div class="col-md-9">
         <h3>{{ $doctor->user->name }}</h3>
         <p class="text-muted mb-3">
             <i class="bi bi-briefcase"></i> {{ $doctor->specialization }}
@@ -37,6 +49,8 @@
         @if($doctor->user->address)
             <p><strong>Địa chỉ:</strong> {{ $doctor->user->address }}</p>
         @endif
+            </div>
+        </div>
     </div>
 </div>
 

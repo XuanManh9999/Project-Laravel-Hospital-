@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendCancellationRefundEmail implements ShouldQueue
+class SendRejectionRefundEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -25,18 +25,19 @@ class SendCancellationRefundEmail implements ShouldQueue
     {
         try {
             $patient = $this->appointment->patient;
+            $doctor = $this->appointment->doctor->user;
 
-            Mail::send('emails.cancellation-refund', [
+            Mail::send('emails.rejection-refund', [
                 'appointment' => $this->appointment,
+                'doctor' => $doctor,
             ], function ($message) use ($patient) {
                 $message->to($patient->email, $patient->name)
-                        ->subject('Thông báo hủy lịch hẹn và hoàn tiền');
+                        ->subject('Thông báo từ chối lịch hẹn và hoàn tiền');
             });
         } catch (\Exception $e) {
-            \Log::error('Error sending cancellation refund email: ' . $e->getMessage(), [
+            \Log::error('Error sending rejection refund email: ' . $e->getMessage(), [
                 'appointment_id' => $this->appointment->id,
             ]);
         }
     }
 }
-

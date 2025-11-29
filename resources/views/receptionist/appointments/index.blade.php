@@ -22,6 +22,8 @@
                         <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Đã chấp nhận</option>
                         <option value="waiting_examination" {{ request('status') == 'waiting_examination' ? 'selected' : '' }}>Chờ khám</option>
                         <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
+                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Đã từ chối</option>
+                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -47,6 +49,8 @@
                         <th>Dịch vụ</th>
                         <th>Ngày giờ</th>
                         <th>Trạng thái</th>
+                        <th>Thanh toán</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,19 +61,37 @@
                             <td>{{ $appointment->service->name }}</td>
                             <td>{{ $appointment->appointment_date->format('d/m/Y') }} - {{ $appointment->shift_label }}</td>
                             <td>
-                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'completed' ? 'primary' : 'warning')) }}">
+                                <span class="badge bg-{{ $appointment->status == 'accepted' ? 'success' : ($appointment->status == 'waiting_examination' ? 'info' : ($appointment->status == 'rejected' ? 'danger' : ($appointment->status == 'completed' ? 'primary' : ($appointment->status == 'cancelled' ? 'secondary' : 'warning')))) }}">
                                     @if($appointment->status == 'pending') Chờ xử lý
                                     @elseif($appointment->status == 'accepted') Đã chấp nhận
                                     @elseif($appointment->status == 'waiting_examination') Chờ khám
+                                    @elseif($appointment->status == 'rejected') Đã từ chối
                                     @elseif($appointment->status == 'completed') Hoàn thành
+                                    @elseif($appointment->status == 'cancelled') Đã hủy
                                     @else {{ $appointment->status }}
                                     @endif
                                 </span>
                             </td>
+                            <td>
+                                <span class="badge bg-{{ $appointment->payment_status === 'paid' ? 'success' : ($appointment->payment_status === 'refunded' ? 'info' : 'secondary') }}">
+                                    @if($appointment->payment_status === 'paid')
+                                        Đã thanh toán
+                                    @elseif($appointment->payment_status === 'refunded')
+                                        Đã hoàn tiền
+                                    @else
+                                        Chưa thanh toán
+                                    @endif
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ route('receptionist.appointments.show', $appointment->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Xem chi tiết
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">Không có dữ liệu</td>
+                            <td colspan="7" class="text-center">Không có dữ liệu</td>
                         </tr>
                     @endforelse
                 </tbody>

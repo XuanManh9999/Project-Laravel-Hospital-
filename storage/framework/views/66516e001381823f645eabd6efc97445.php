@@ -1,15 +1,13 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', $post->title); ?>
 
-@section('title', $post->title)
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container py-4 px-3 px-md-4">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('welcome') }}">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('posts.index') }}">Tin tức</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($post->title, 50) }}</li>
+            <li class="breadcrumb-item"><a href="<?php echo e(route('welcome')); ?>">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo e(route('posts.index')); ?>">Tin tức</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><?php echo e(Str::limit($post->title, 50)); ?></li>
         </ol>
     </nav>
 
@@ -17,25 +15,26 @@
         <!-- Main Content -->
         <div class="col-lg-8">
             <article class="card border-0 shadow-sm mb-4">
-                @if($post->image)
-                    <img src="{{ $post->image }}" 
+                <?php if($post->image): ?>
+                    <img src="<?php echo e($post->image); ?>" 
                          class="card-img-top" 
-                         alt="{{ $post->title }}"
+                         alt="<?php echo e($post->title); ?>"
                          style="max-height: 400px; object-fit: cover;"
                          onerror="this.style.display='none'">
-                @endif
+                <?php endif; ?>
                 
                 <div class="card-body p-4">
-                    <h1 class="card-title mb-3 fw-bold">{{ $post->title }}</h1>
+                    <h1 class="card-title mb-3 fw-bold"><?php echo e($post->title); ?></h1>
                     
                     <div class="d-flex flex-wrap align-items-center gap-3 mb-4 text-muted">
                         <div>
                             <i class="bi bi-person-circle"></i>
-                            <strong>{{ $post->author->name }}</strong>
+                            <strong><?php echo e($post->author->name); ?></strong>
                         </div>
                         <div>
                             <i class="bi bi-calendar3"></i>
-                            {{ $post->created_at->format('d/m/Y H:i') }}
+                            <?php echo e($post->created_at->format('d/m/Y H:i')); ?>
+
                         </div>
                         <div>
                             <i class="bi bi-eye"></i>
@@ -46,7 +45,8 @@
                     <hr>
 
                     <div class="post-content">
-                        {!! $post->content !!}
+                        <?php echo $post->content; ?>
+
                     </div>
 
                     <!-- End content -->
@@ -54,7 +54,7 @@
             </article>
 
             <!-- Related Posts -->
-            @if($relatedPosts->count() > 0)
+            <?php if($relatedPosts->count() > 0): ?>
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0 fw-bold">
@@ -63,33 +63,35 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                            @foreach($relatedPosts as $relatedPost)
+                            <?php $__currentLoopData = $relatedPosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relatedPost): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="col-md-4">
                                     <div class="card border-0 h-100 hover-shadow">
-                                        @if($relatedPost->image)
-                                            <img src="{{ $relatedPost->image }}" 
+                                        <?php if($relatedPost->image): ?>
+                                            <img src="<?php echo e($relatedPost->image); ?>" 
                                                  class="card-img-top" 
-                                                 alt="{{ $relatedPost->title }}"
+                                                 alt="<?php echo e($relatedPost->title); ?>"
                                                  style="height: 150px; object-fit: cover;"
                                                  onerror="this.style.display='none'">
-                                        @endif
+                                        <?php endif; ?>
                                         <div class="card-body">
                                             <h6 class="card-title">
-                                                <a href="{{ route('posts.show', $relatedPost->id) }}" class="text-decoration-none">
-                                                    {{ Str::limit($relatedPost->title, 60) }}
+                                                <a href="<?php echo e(route('posts.show', $relatedPost->id)); ?>" class="text-decoration-none">
+                                                    <?php echo e(Str::limit($relatedPost->title, 60)); ?>
+
                                                 </a>
                                             </h6>
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar"></i> {{ $relatedPost->created_at->format('d/m/Y') }}
+                                                <i class="bi bi-calendar"></i> <?php echo e($relatedPost->created_at->format('d/m/Y')); ?>
+
                                             </small>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Sidebar -->
@@ -102,36 +104,37 @@
                     </h5>
                 </div>
                 <div class="list-group list-group-flush">
-                    @php
+                    <?php
                         $latestPosts = \App\Models\Post::where('status', 'published')
                             ->where('id', '!=', $post->id)
                             ->with('author')
                             ->latest()
                             ->limit(5)
                             ->get();
-                    @endphp
-                    @forelse($latestPosts as $latestPost)
-                        <a href="{{ route('posts.show', $latestPost->id) }}" 
+                    ?>
+                    <?php $__empty_1 = true; $__currentLoopData = $latestPosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $latestPost): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <a href="<?php echo e(route('posts.show', $latestPost->id)); ?>" 
                            class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ Str::limit($latestPost->title, 50) }}</h6>
+                                <h6 class="mb-1"><?php echo e(Str::limit($latestPost->title, 50)); ?></h6>
                             </div>
                             <small class="text-muted">
-                                <i class="bi bi-calendar"></i> {{ $latestPost->created_at->format('d/m/Y') }}
+                                <i class="bi bi-calendar"></i> <?php echo e($latestPost->created_at->format('d/m/Y')); ?>
+
                             </small>
                         </a>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="list-group-item text-muted text-center">
                             Chưa có bài viết nào
                         </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
 
             <!-- Back to list -->
             <div class="card border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <a href="{{ route('posts.index') }}" class="btn btn-primary w-100">
+                    <a href="<?php echo e(route('posts.index')); ?>" class="btn btn-primary w-100">
                         <i class="bi bi-arrow-left"></i> Xem tất cả bài viết
                     </a>
                 </div>
@@ -140,7 +143,7 @@
     </div>
 </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .post-content {
         font-size: 1.1rem;
@@ -180,7 +183,9 @@
         box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\DACN\WEBSITE_BENH_VIEN\resources\views/posts/show.blade.php ENDPATH**/ ?>

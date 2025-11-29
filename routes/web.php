@@ -92,6 +92,7 @@ Route::middleware(['auth', 'role:receptionist'])->prefix('receptionist')->name('
     Route::put('/profile', [ReceptionistController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-password', [ReceptionistController::class, 'changePassword'])->name('profile.change-password');
     Route::get('/appointments', [ReceptionistController::class, 'appointments'])->name('appointments.index');
+    Route::get('/appointments/{id}', [ReceptionistController::class, 'showAppointment'])->name('appointments.show');
 });
 
 // Patient routes

@@ -1,25 +1,25 @@
-@extends('layouts.app')
 
-@section('title', 'Thông tin cá nhân')
 
-@section('content')
+<?php $__env->startSection('title', 'Thông tin cá nhân'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container py-4">
     <div class="row">
         <div class="col-md-3 mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body text-center">
                     <div class="mb-3">
-                        @if($doctor->avatar)
-                            <img src="{{ $doctor->avatar }}" alt="{{ auth()->user()->name }}" 
+                        <?php if($doctor->avatar): ?>
+                            <img src="<?php echo e($doctor->avatar); ?>" alt="<?php echo e(auth()->user()->name); ?>" 
                                  class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #0d6efd;">
-                        @else
+                        <?php else: ?>
                             <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
                                 <i class="bi bi-person-badge display-4 text-primary"></i>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
-                    <h5 class="mb-1">{{ auth()->user()->name }}</h5>
-                    <p class="text-muted small mb-0">{{ auth()->user()->email }}</p>
+                    <h5 class="mb-1"><?php echo e(auth()->user()->name); ?></h5>
+                    <p class="text-muted small mb-0"><?php echo e(auth()->user()->email); ?></p>
                     <span class="badge bg-success mt-2">Bác sĩ</span>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                     <a href="#change-password" class="list-group-item list-group-item-action" data-bs-toggle="tab">
                         <i class="bi bi-key me-2"></i> Đổi mật khẩu
                     </a>
-                    <a href="{{ route('doctor.appointments.index') }}" class="list-group-item list-group-item-action">
+                    <a href="<?php echo e(route('doctor.appointments.index')); ?>" class="list-group-item list-group-item-action">
                         <i class="bi bi-calendar-check me-2"></i> Lịch hẹn của tôi
                     </a>
                 </div>
@@ -50,23 +50,23 @@
                     <div class="tab-content">
                         <!-- Profile Info Tab -->
                         <div class="tab-pane fade show active" id="profile-info">
-                            <form method="POST" action="{{ route('doctor.profile.update') }}">
-                                @csrf
-                                @method('PUT')
+                            <form method="POST" action="<?php echo e(route('doctor.profile.update')); ?>">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('PUT'); ?>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-person"></i> Họ và tên <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" name="name" value="{{ auth()->user()->name }}" required>
+                                        <input type="text" class="form-control" name="name" value="<?php echo e(auth()->user()->name); ?>" required>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-envelope"></i> Email <span class="text-danger">*</span>
                                         </label>
-                                        <input type="email" class="form-control" name="email" value="{{ auth()->user()->email }}" required>
+                                        <input type="email" class="form-control" name="email" value="<?php echo e(auth()->user()->email); ?>" required>
                                     </div>
                                 </div>
 
@@ -75,14 +75,14 @@
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-telephone"></i> Số điện thoại
                                         </label>
-                                        <input type="text" class="form-control" name="phone" value="{{ auth()->user()->phone }}">
+                                        <input type="text" class="form-control" name="phone" value="<?php echo e(auth()->user()->phone); ?>">
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-geo-alt"></i> Địa chỉ
                                         </label>
-                                        <input type="text" class="form-control" name="address" value="{{ auth()->user()->address }}">
+                                        <input type="text" class="form-control" name="address" value="<?php echo e(auth()->user()->address); ?>">
                                     </div>
                                 </div>
 
@@ -90,13 +90,13 @@
                                     <label class="form-label fw-semibold">
                                         <i class="bi bi-image"></i> Avatar (URL)
                                     </label>
-                                    <input type="url" class="form-control" name="avatar" value="{{ $doctor->avatar }}" placeholder="https://example.com/avatar.jpg">
+                                    <input type="url" class="form-control" name="avatar" value="<?php echo e($doctor->avatar); ?>" placeholder="https://example.com/avatar.jpg">
                                     <small class="form-text text-muted">Nhập URL hình ảnh avatar của bạn</small>
-                                    @if($doctor->avatar)
+                                    <?php if($doctor->avatar): ?>
                                         <div class="mt-2">
-                                            <img src="{{ $doctor->avatar }}" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                            <img src="<?php echo e($doctor->avatar); ?>" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover;">
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="row">
@@ -104,14 +104,14 @@
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-briefcase"></i> Chuyên khoa <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" name="specialization" value="{{ $doctor->specialization }}" required>
+                                        <input type="text" class="form-control" name="specialization" value="<?php echo e($doctor->specialization); ?>" required>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-award"></i> Kinh nghiệm (năm)
                                         </label>
-                                        <input type="number" class="form-control" name="experience" value="{{ $doctor->experience }}" min="0">
+                                        <input type="number" class="form-control" name="experience" value="<?php echo e($doctor->experience); ?>" min="0">
                                     </div>
                                 </div>
 
@@ -120,14 +120,14 @@
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-mortarboard"></i> Bằng cấp
                                         </label>
-                                        <input type="text" class="form-control" name="qualification" value="{{ $doctor->qualification }}">
+                                        <input type="text" class="form-control" name="qualification" value="<?php echo e($doctor->qualification); ?>">
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-currency-dollar"></i> Phí tư vấn
                                         </label>
-                                        <input type="number" class="form-control" name="consultation_fee" value="{{ $doctor->consultation_fee }}" min="0" step="0.01">
+                                        <input type="number" class="form-control" name="consultation_fee" value="<?php echo e($doctor->consultation_fee); ?>" min="0" step="0.01">
                                     </div>
                                 </div>
 
@@ -135,7 +135,7 @@
                                     <label class="form-label fw-semibold">
                                         <i class="bi bi-file-text"></i> Giới thiệu
                                     </label>
-                                    <textarea class="form-control" name="bio" rows="4" placeholder="Nhập giới thiệu về bản thân...">{{ $doctor->bio }}</textarea>
+                                    <textarea class="form-control" name="bio" rows="4" placeholder="Nhập giới thiệu về bản thân..."><?php echo e($doctor->bio); ?></textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">
@@ -146,29 +146,57 @@
 
                         <!-- Change Password Tab -->
                         <div class="tab-pane fade" id="change-password">
-                            <form method="POST" action="{{ route('doctor.profile.change-password') }}">
-                                @csrf
+                            <form method="POST" action="<?php echo e(route('doctor.profile.change-password')); ?>">
+                                <?php echo csrf_field(); ?>
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">
                                         <i class="bi bi-lock"></i> Mật khẩu hiện tại <span class="text-danger">*</span>
                                     </label>
-                                    <input type="password" class="form-control @error('current_password') is-invalid @enderror" 
+                                    <input type="password" class="form-control <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            name="current_password" required>
-                                    @error('current_password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">
                                         <i class="bi bi-key"></i> Mật khẩu mới <span class="text-danger">*</span>
                                     </label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            name="password" required>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     <small class="form-text text-muted">Tối thiểu 8 ký tự</small>
                                 </div>
 
@@ -191,7 +219,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
         tab.addEventListener('shown.bs.tab', function (e) {
@@ -210,5 +238,7 @@
         }
     }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\DACN\WEBSITE_BENH_VIEN\resources\views/doctor/profile.blade.php ENDPATH**/ ?>

@@ -11,6 +11,7 @@ class Doctor extends Model
 
     protected $fillable = [
         'user_id',
+        'avatar',
         'specialization',
         'experience',
         'qualification',

@@ -46,13 +46,27 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap">
+            @if(in_array($appointment->status, ['pending','accepted','waiting_examination']))
+                <form method="POST" action="{{ route('patient.appointments.cancel', $appointment->id) }}" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn này?')">
+                        <i class="bi bi-x-circle"></i> Hủy lịch hẹn
+                    </button>
+                </form>
+            @endif
+
+            @if($appointment->payment_status !== \App\Models\Appointment::PAYMENT_STATUS_PAID && in_array($appointment->status, ['pending','accepted']))
+                <form method="POST" action="{{ route('vnpay.create', $appointment->id) }}" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-credit-card"></i> Thanh toán VNPay
+                    </button>
+                </form>
+            @endif
+        </div>
+
         @if($appointment->payment_status !== \App\Models\Appointment::PAYMENT_STATUS_PAID && in_array($appointment->status, ['pending','accepted']))
-            <form method="POST" action="{{ route('vnpay.create', $appointment->id) }}" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-credit-card"></i> Thanh toán VNPay
-                </button>
-            </form>
             <div class="alert alert-info mt-3 mb-0">
                 <small>
                     Bạn sẽ được chuyển hướng tới cổng VNPay để hoàn tất thanh toán.
@@ -61,15 +75,12 @@
             </div>
         @endif
 
-        @if(in_array($appointment->status, ['pending','accepted']))
-            @if($appointment->canBeCancelled())
-                <form method="POST" action="{{ route('patient.appointments.cancel', $appointment->id) }}" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn này?')">
-                        <i class="bi bi-x-circle"></i> Hủy lịch hẹn
-                    </button>
-                </form>
-            @endif
+        @if(in_array($appointment->status, ['pending','accepted','waiting_examination']) && $appointment->payment_status === 'paid')
+            <div class="alert alert-info mt-3 mb-0">
+                <small>
+                    <i class="bi bi-info-circle"></i> Nếu bạn hủy lịch hẹn đã thanh toán, bạn sẽ nhận được email hướng dẫn liên hệ qua Zalo để hoàn tiền.
+                </small>
+            </div>
         @endif
     </div>
 </div>

@@ -82,7 +82,7 @@ class ReceptionistController extends Controller
 
     public function appointments(Request $request)
     {
-        $query = Appointment::with(['patient', 'doctor.user', 'service']);
+        $query = Appointment::with(['patient', 'doctor.user', 'service', 'payment']);
 
         if ($request->date) {
             $query->whereDate('appointment_date', $request->date);
@@ -107,6 +107,14 @@ class ReceptionistController extends Controller
         $appointments = $query->latest()->paginate(15)->withQueryString();
 
         return view('receptionist.appointments.index', compact('appointments'));
+    }
+
+    public function showAppointment($id)
+    {
+        $appointment = Appointment::with(['patient', 'doctor.user', 'service', 'payment'])
+            ->findOrFail($id);
+
+        return view('receptionist.appointments.show', compact('appointment'));
     }
 }
 

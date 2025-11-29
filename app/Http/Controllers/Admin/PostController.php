@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -45,13 +44,9 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|url|max:500',
             'status' => 'required|in:draft,published',
         ]);
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('posts', 'public');
-        }
 
         $validated['author_id'] = auth()->id();
 
@@ -73,16 +68,9 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|url|max:500',
             'status' => 'required|in:draft,published',
         ]);
-
-        if ($request->hasFile('image')) {
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $validated['image'] = $request->file('image')->store('posts', 'public');
-        }
 
         $post->update($validated);
 
@@ -92,11 +80,6 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-        
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-        
         $post->delete();
 
         return redirect()->route('admin.posts.index')->with('success', 'Xóa bài viết thành công.');

@@ -182,27 +182,54 @@ class PatientController extends Controller
     public function cancelAppointment($id)
     {
         $appointment = Appointment::where('patient_id', auth()->id())
+            ->with('payment')
             ->findOrFail($id);
 
-        if (!$appointment->canBeCancelled()) {
-            return back()->withErrors(['error' => 'Chỉ có thể hủy lịch hẹn trước 3 ngày.']);
+        // Chỉ cho phép hủy khi lịch chưa hoàn thành hoặc chưa bị từ chối
+        if (!in_array($appointment->status, [Appointment::STATUS_PENDING, Appointment::STATUS_ACCEPTED, Appointment::STATUS_WAITING_EXAMINATION])) {
+            return back()->withErrors(['error' => 'Không thể hủy lịch hẹn này.']);
         }
 
-        if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID) {
-            // Create refund request
-            \App\Models\Refund::create([
+        try {
+            \DB::beginTransaction();
+
+            // Nếu đã thanh toán, tạo yêu cầu hoàn tiền và gửi email
+            if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID && $appointment->payment) {
+                // Kiểm tra xem đã có refund chưa để tránh tạo trùng
+                $existingRefund = \App\Models\Refund::where('appointment_id', $appointment->id)->first();
+                
+                if (!$existingRefund) {
+                    \App\Models\Refund::create([
+                        'appointment_id' => $appointment->id,
+                        'amount' => $appointment->payment->amount,
+                        'reason' => 'Bệnh nhân hủy lịch hẹn',
+                        'status' => \App\Models\Refund::STATUS_PENDING,
+                    ]);
+                }
+
+                // Gửi email thông báo hủy và hoàn tiền (có thông tin Zalo)
+                \App\Jobs\SendCancellationRefundEmail::dispatch($appointment);
+            }
+            // Nếu chưa thanh toán, chỉ hủy lịch, không gửi email
+
+            $appointment->update(['status' => Appointment::STATUS_CANCELLED]);
+
+            \DB::commit();
+
+            $message = 'Hủy lịch hẹn thành công.';
+            if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID) {
+                $message .= ' Yêu cầu hoàn tiền đã được tạo. Vui lòng kiểm tra email để biết thông tin liên hệ.';
+            }
+
+            return back()->with('success', $message);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Error cancelling appointment: ' . $e->getMessage(), [
                 'appointment_id' => $appointment->id,
-                'amount' => $appointment->payment->amount,
-                'status' => \App\Models\Refund::STATUS_PENDING,
+                'patient_id' => auth()->id(),
             ]);
-
-            // Send email notification about refund
-            \App\Jobs\SendCancellationRefundEmail::dispatch($appointment);
+            return back()->withErrors(['error' => 'Có lỗi xảy ra khi hủy lịch hẹn. Vui lòng thử lại.']);
         }
-
-        $appointment->update(['status' => Appointment::STATUS_CANCELLED]);
-
-        return back()->with('success', 'Hủy lịch hẹn thành công.');
     }
 
     public function history()

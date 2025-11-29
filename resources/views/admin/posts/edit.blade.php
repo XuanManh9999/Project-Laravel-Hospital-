@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.posts.update', $post->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.posts.update', $post->id) }}" id="postForm">
             @csrf
             @method('PUT')
 
@@ -27,26 +27,26 @@
             <div class="mb-3">
                 <label class="form-label">Nội dung <span class="text-danger">*</span></label>
                 <textarea id="content-editor" class="form-control @error('content') is-invalid @enderror" 
-                          name="content" rows="15" required>{{ old('content', $post->content) }}</textarea>
+                          name="content" rows="15">{{ old('content', $post->content) }}</textarea>
                 @error('content')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
                 <small class="form-text text-muted">Sử dụng editor để định dạng nội dung bài viết</small>
             </div>
 
-            @if($post->image)
-                <div class="mb-3">
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="Current image" class="img-thumbnail" style="max-height: 200px;">
-                </div>
-            @endif
-
             <div class="mb-3">
-                <label class="form-label">Hình ảnh mới (để trống nếu không đổi)</label>
-                <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                       name="image" accept="image/*">
+                <label class="form-label">Hình ảnh (URL)</label>
+                <input type="url" class="form-control @error('image') is-invalid @enderror" 
+                       name="image" value="{{ old('image', $post->image) }}" placeholder="https://example.com/image.jpg">
                 @error('image')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+                <small class="form-text text-muted">Nhập URL hình ảnh từ internet</small>
+                @if($post->image)
+                    <div class="mt-2">
+                        <img src="{{ $post->image }}" alt="Current image" class="img-thumbnail" style="max-height: 200px; max-width: 100%; object-fit: cover;" onerror="this.style.display='none'">
+                    </div>
+                @endif
             </div>
 
             <div class="mb-3">
@@ -75,18 +75,31 @@
         plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
         ],
         toolbar: 'undo redo | blocks | ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | help | link image media | code',
         content_style: 'body { font-family: Arial, sans-serif; font-size: 14px }',
-        language: 'vi',
         branding: false,
         promotion: false,
-        images_upload_url: false,
-        automatic_uploads: false
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+            });
+        }
+    });
+
+    // Validate form before submit
+    document.getElementById('postForm').addEventListener('submit', function(e) {
+        const content = tinymce.get('content-editor').getContent();
+        if (!content || content.trim() === '' || content === '<p></p>') {
+            e.preventDefault();
+            alert('Vui lòng nhập nội dung bài viết.');
+            tinymce.get('content-editor').focus();
+            return false;
+        }
     });
 </script>
 @endpush

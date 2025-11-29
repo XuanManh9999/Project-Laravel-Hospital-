@@ -52,6 +52,7 @@ class UserController extends Controller
             'role' => 'required|in:doctor,receptionist',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
+            'avatar' => 'nullable|url|max:500',
             'specialization' => 'required_if:role,doctor|string|max:255',
             'experience' => 'nullable|integer|min:0',
             'qualification' => 'nullable|string|max:255',
@@ -72,6 +73,7 @@ class UserController extends Controller
         if ($validated['role'] === 'doctor') {
             Doctor::create([
                 'user_id' => $user->id,
+                'avatar' => $validated['avatar'] ?? null,
                 'specialization' => $validated['specialization'],
                 'experience' => $validated['experience'] ?? 0,
                 'qualification' => $validated['qualification'] ?? null,
@@ -105,6 +107,12 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'status' => 'required|in:active,inactive',
+            'avatar' => 'nullable|url|max:500',
+            'specialization' => 'nullable|string|max:255',
+            'experience' => 'nullable|integer|min:0',
+            'qualification' => 'nullable|string|max:255',
+            'bio' => 'nullable|string',
+            'consultation_fee' => 'nullable|numeric|min:0',
         ]);
 
         $user->update([
@@ -117,6 +125,18 @@ class UserController extends Controller
 
         if ($validated['password']) {
             $user->update(['password' => Hash::make($validated['password'])]);
+        }
+
+        // Cập nhật thông tin bác sĩ nếu có
+        if ($user->role === 'doctor' && $user->doctor) {
+            $user->doctor->update([
+                'avatar' => $validated['avatar'] ?? null,
+                'specialization' => $validated['specialization'] ?? $user->doctor->specialization,
+                'experience' => $validated['experience'] ?? $user->doctor->experience,
+                'qualification' => $validated['qualification'] ?? $user->doctor->qualification,
+                'bio' => $validated['bio'] ?? $user->doctor->bio,
+                'consultation_fee' => $validated['consultation_fee'] ?? $user->doctor->consultation_fee,
+            ]);
         }
 
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật thành công.');

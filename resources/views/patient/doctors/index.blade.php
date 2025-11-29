@@ -12,7 +12,17 @@
     @forelse($doctors as $doctor)
         <div class="col-md-4">
             <div class="card h-100">
-                <div class="card-body">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        @if($doctor->avatar)
+                            <img src="{{ $doctor->avatar }}" alt="{{ $doctor->user->name }}" 
+                                 class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #0d6efd;">
+                        @else
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                <i class="bi bi-person-circle display-4 text-primary"></i>
+                            </div>
+                        @endif
+                    </div>
                     <h5 class="card-title">{{ $doctor->user->name }}</h5>
                     <p class="text-muted mb-2">
                         <i class="bi bi-briefcase"></i> {{ $doctor->specialization }}

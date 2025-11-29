@@ -50,6 +50,8 @@ npm install
 
 ```bash
 cp .env.example .env
+# Hoặc trên Windows:
+copy .env.example .env
 php artisan key:generate
 ```
 
@@ -73,22 +75,36 @@ VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 VNPAY_RETURN_URL=http://localhost/vnpay/return
 ```
 
-5. Chạy migrations:
+5. Chạy migrations và seed dữ liệu mẫu:
 
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
 
-6. Build assets:
+6. Tạo storage link (nếu cần):
 
 ```bash
+php artisan storage:link
+```
+
+7. Build assets:
+
+```bash
+npm install
 npm run build
 ```
 
-7. Chạy server:
+8. Chạy server:
 
 ```bash
 php artisan serve
+```
+
+Hoặc với host và port cụ thể:
+
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
 ## Khắc phục lỗi 419 (Page Expired)

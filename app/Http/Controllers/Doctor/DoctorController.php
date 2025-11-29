@@ -39,6 +39,7 @@ class DoctorController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
+            'avatar' => 'nullable|url|max:500',
             'specialization' => 'required|string|max:255',
             'experience' => 'nullable|integer|min:0',
             'qualification' => 'nullable|string|max:255',
@@ -57,6 +58,7 @@ class DoctorController extends Controller
             ]);
 
             $doctor->update([
+                'avatar' => $validated['avatar'] ?? null,
                 'specialization' => $validated['specialization'],
                 'experience' => $validated['experience'] ?? 0,
                 'qualification' => $validated['qualification'] ?? null,
@@ -202,9 +204,20 @@ class DoctorController extends Controller
 
             \DB::commit();
 
-            \App\Jobs\SendAppointmentNotification::dispatch($appointment, 'rejected');
+            // Nếu đã thanh toán, gửi email với thông tin hoàn tiền và Zalo
+            if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID && $appointment->payment) {
+                \App\Jobs\SendRejectionRefundEmail::dispatch($appointment);
+            } else {
+                // Nếu chưa thanh toán, chỉ gửi email thông báo từ chối thông thường
+                \App\Jobs\SendAppointmentNotification::dispatch($appointment, 'rejected');
+            }
 
-            return back()->with('success', 'Từ chối lịch hẹn thành công.' . ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID ? ' Yêu cầu hoàn tiền đã được tạo.' : ''));
+            $message = 'Từ chối lịch hẹn thành công.';
+            if ($appointment->payment_status === Appointment::PAYMENT_STATUS_PAID) {
+                $message .= ' Yêu cầu hoàn tiền đã được tạo. Bệnh nhân sẽ nhận được email hướng dẫn liên hệ qua Zalo.';
+            }
+
+            return back()->with('success', $message);
         } catch (\Exception $e) {
             \DB::rollBack();
             \Log::error('Error rejecting appointment: ' . $e->getMessage(), [

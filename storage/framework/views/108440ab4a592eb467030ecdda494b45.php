@@ -1,0 +1,181 @@
+
+
+<?php $__env->startSection('title', 'Tạo tài khoản'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container py-4 px-3 px-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Tạo tài khoản</h2>
+    <a href="<?php echo e(route('admin.users.index')); ?>" class="btn btn-secondary">Quay lại</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="<?php echo e(route('admin.users.store')); ?>">
+            <?php echo csrf_field(); ?>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                           name="name" value="<?php echo e(old('name')); ?>" required>
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                           name="email" value="<?php echo e(old('email')); ?>" required>
+                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                           name="password" required>
+                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Vai trò</label>
+                    <select name="role" class="form-select <?php $__errorArgs = ['role'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="role" required>
+                        <option value="">Chọn vai trò</option>
+                        <option value="doctor" <?php echo e(old('role') == 'doctor' ? 'selected' : ''); ?>>Bác sĩ</option>
+                        <option value="receptionist" <?php echo e(old('role') == 'receptionist' ? 'selected' : ''); ?>>Tiếp viên</option>
+                    </select>
+                    <?php $__errorArgs = ['role'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" class="form-control" name="phone" value="<?php echo e(old('phone')); ?>">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Địa chỉ</label>
+                    <input type="text" class="form-control" name="address" value="<?php echo e(old('address')); ?>">
+                </div>
+            </div>
+
+            <div id="doctorFields" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Chuyên khoa</label>
+                        <input type="text" class="form-control" name="specialization" value="<?php echo e(old('specialization')); ?>">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Kinh nghiệm (năm)</label>
+                        <input type="number" class="form-control" name="experience" value="<?php echo e(old('experience', 0)); ?>" min="0">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Bằng cấp</label>
+                        <input type="text" class="form-control" name="qualification" value="<?php echo e(old('qualification')); ?>">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phí tư vấn</label>
+                        <input type="number" class="form-control" name="consultation_fee" value="<?php echo e(old('consultation_fee', 0)); ?>" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Giới thiệu</label>
+                    <textarea class="form-control" name="bio" rows="3"><?php echo e(old('bio')); ?></textarea>
+                </div>
+            </div>
+
+            <div id="receptionistFields" style="display: none;">
+                <div class="mb-3">
+                    <label class="form-label">Ca làm việc</label>
+                    <input type="text" class="form-control" name="shift" value="<?php echo e(old('shift')); ?>" placeholder="VD: Sáng (8h-12h)">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('role').addEventListener('change', function() {
+        const role = this.value;
+        document.getElementById('doctorFields').style.display = role === 'doctor' ? 'block' : 'none';
+        document.getElementById('receptionistFields').style.display = role === 'receptionist' ? 'block' : 'none';
+    });
+</script>
+<?php $__env->stopSection(); ?>
+
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\DACN\WEBSITE_BENH_VIEN\resources\views/admin/users/create.blade.php ENDPATH**/ ?>

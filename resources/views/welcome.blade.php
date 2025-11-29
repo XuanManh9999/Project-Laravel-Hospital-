@@ -170,9 +170,14 @@
                     <div class="card h-100 border-0 shadow-sm text-center hover-shadow">
                         <div class="card-body p-4">
                             <div class="mb-3">
-                                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-person-circle display-4 text-primary"></i>
-                                </div>
+                                @if($doctor->avatar)
+                                    <img src="{{ $doctor->avatar }}" alt="{{ $doctor->user->name }}" 
+                                         class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #0d6efd;">
+                                @else
+                                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-person-circle display-4 text-primary"></i>
+                                    </div>
+                                @endif
                             </div>
                             <h5 class="card-title">{{ $doctor->user->name }}</h5>
                             <p class="text-muted mb-2">
@@ -254,10 +259,11 @@
                     <div class="card h-100 border-0 shadow-sm hover-shadow">
                         @if($post->image)
                             <a href="{{ route('posts.show', $post->id) }}">
-                                <img src="{{ asset('storage/' . $post->image) }}" 
+                                <img src="{{ $post->image }}" 
                                      class="card-img-top" 
                                      alt="{{ $post->title }}"
-                                     style="height: 200px; object-fit: cover;">
+                                     style="height: 200px; object-fit: cover;"
+                                     onerror="this.style.display='none'">
                             </a>
                         @endif
                         <div class="card-body">

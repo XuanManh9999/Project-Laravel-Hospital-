@@ -15,10 +15,11 @@
                 <div class="card h-100 border-0 shadow-sm hover-shadow">
                     @if($post->image)
                         <a href="{{ route('posts.show', $post->id) }}">
-                            <img src="{{ asset('storage/' . $post->image) }}" 
+                            <img src="{{ $post->image }}" 
                                  class="card-img-top" 
                                  alt="{{ $post->title }}"
-                                 style="height: 200px; object-fit: cover;">
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.style.display='none'">
                         </a>
                     @endif
                     <div class="card-body">
