@@ -4197,3 +4197,15 @@
 [2025-11-29 23:22:53] local.INFO: User logged in {"user_id":8,"email":"nguyenxuanmanh2992003@gmail.com"} 
 [2025-11-29 23:27:08] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
 [2025-11-29 23:32:23] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
+[2025-11-30 00:06:08] local.INFO: User logged in {"user_id":8,"email":"nguyenxuanmanh2992003@gmail.com"} 
+[2025-11-30 00:08:39] local.INFO: User logged in {"user_id":3,"email":"doctor2@hospital.com"} 
+[2025-11-30 00:10:21] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
+[2025-11-30 00:11:27] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-30 20:12:33] local.INFO: User logged in {"user_id":8,"email":"phungtheanh12a1nhnd@gmail.com"} 
+[2025-11-30 20:18:33] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-30 20:20:46] local.INFO: User logged in {"user_id":3,"email":"doctor2@hospital.com"} 
+[2025-11-30 20:21:31] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-30 20:23:24] local.INFO: User logged in {"user_id":6,"email":"receptionist1@hospital.com"} 
+[2025-11-30 20:26:28] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-30 20:36:09] local.INFO: User logged in {"user_id":1,"email":"admin@hospital.com"} 
+[2025-11-30 20:36:31] local.INFO: User logged in {"user_id":8,"email":"phungtheanh12a1nhnd@gmail.com"} 

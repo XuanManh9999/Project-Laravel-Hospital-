@@ -126,6 +126,12 @@ unset($__errorArgs, $__bag); ?>
             </div>
 
             <div id="doctorFields" style="display: none;">
+                <div class="mb-3">
+                    <label class="form-label">Avatar (URL)</label>
+                    <input type="url" class="form-control" name="avatar" value="<?php echo e(old('avatar')); ?>" placeholder="https://example.com/avatar.jpg">
+                    <small class="form-text text-muted">Nhập URL hình ảnh avatar từ internet</small>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Chuyên khoa</label>
