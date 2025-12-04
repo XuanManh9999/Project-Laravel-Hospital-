@@ -218,7 +218,6 @@ class DatabaseSeeder extends Seeder
         foreach ($services as $service) {
             Service::create($service);
         }
-
         // Tạo Bài viết
         $this->call(PostSeeder::class);
 

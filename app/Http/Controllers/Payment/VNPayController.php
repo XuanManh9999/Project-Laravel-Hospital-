@@ -13,7 +13,7 @@ class VNPayController extends Controller
 {
     public function createPayment(Request $request, $appointmentId)
     {
-        $appointment = Appointment::with('service')
+        $appointment = Appointment::with(['service', 'doctor'])
             ->where('patient_id', auth()->id())
             ->findOrFail($appointmentId);
 
@@ -41,10 +41,14 @@ class VNPayController extends Controller
             return back()->withErrors(['error' => 'Không thể khởi tạo thanh toán cho dịch vụ này.']);
         }
 
+        // Tổng tiền = giá dịch vụ + phí tư vấn bác sĩ
+        $consultationFee = $appointment->doctor?->consultation_fee ?? 0;
+        $totalAmount = (float) $appointment->service->price + (float) $consultationFee;
+
         $vnp_TxnRef = 'APPT' . $appointment->id . '_' . time();
         $vnp_OrderInfo = 'Thanh toan lich hen #' . $appointment->id;
         $vnp_OrderType = 'other';
-        $vnp_Amount = (int) ($appointment->service->price * 100); // VNPay sử dụng đơn vị đồng * 100
+        $vnp_Amount = (int) ($totalAmount * 100); // VNPay sử dụng đơn vị đồng * 100
         $vnp_Locale = 'vn';
         $vnp_IpAddr = $request->ip();
 
@@ -71,7 +75,7 @@ class VNPayController extends Controller
         Payment::updateOrCreate(
             ['appointment_id' => $appointment->id],
             [
-                'amount' => $appointment->service->price,
+                'amount' => $totalAmount,
                 'payment_method' => 'vnpay',
                 'transaction_id' => $vnp_TxnRef,
                 'status' => Payment::STATUS_PENDING,
@@ -156,4 +160,3 @@ class VNPayController extends Controller
         return redirect($route)->withErrors(['error' => $message]);
     }
 }
-

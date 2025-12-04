@@ -118,9 +118,12 @@
     <!-- Services Section -->
     <section id="services" class="mb-5 py-5" style="background: #f8f9fa; border-radius: 15px;">
         <div class="container">
-            <div class="text-center mb-5">
+            <div class="text-center mb-4">
                 <h2 class="fw-bold display-5">Dịch vụ của chúng tôi</h2>
-                <p class="text-muted lead">Các dịch vụ y tế chất lượng cao</p>
+                <p class="text-muted lead mb-3">Các dịch vụ y tế chất lượng cao</p>
+                <a href="<?php echo e(route('services.index')); ?>" class="btn btn-outline-primary">
+                    <i class="bi bi-grid"></i> Xem tất cả dịch vụ
+                </a>
             </div>
             <div class="row g-4">
                 <?php
@@ -155,9 +158,12 @@
 
     <!-- Doctors Section -->
     <section id="doctors" class="mb-5 py-5">
-        <div class="text-center mb-5">
+        <div class="text-center mb-4">
             <h2 class="fw-bold display-5">Đội ngũ bác sĩ</h2>
-            <p class="text-muted lead">Các chuyên gia hàng đầu</p>
+            <p class="text-muted lead mb-3">Các chuyên gia hàng đầu</p>
+            <a href="<?php echo e(route('public.doctors.index')); ?>" class="btn btn-outline-primary">
+                <i class="bi bi-people"></i> Xem tất cả bác sĩ
+            </a>
         </div>
         <div class="row g-4">
             <?php

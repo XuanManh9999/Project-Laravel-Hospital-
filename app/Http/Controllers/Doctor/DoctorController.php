@@ -117,7 +117,7 @@ class DoctorController extends Controller
 
         $appointments = $query->latest()->paginate(15)->withQueryString();
 
-        return view('doctor.appointments.index', compact('appointments'));
+        return view('doctor.appointments.index', compact('appointments', 'doctor'));
     }
 
     public function showAppointment($id)
@@ -273,7 +273,6 @@ class DoctorController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('doctor.history', compact('appointments'));
+        return view('doctor.history', compact('appointments', 'doctor'));
     }
 }
-

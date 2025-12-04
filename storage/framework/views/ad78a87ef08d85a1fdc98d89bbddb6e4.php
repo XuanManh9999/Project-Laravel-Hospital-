@@ -42,6 +42,12 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+
+                <small class="text-muted d-block mt-2">
+                    <i class="bi bi-info-circle"></i>
+                    Phí tư vấn bác sĩ: <strong><?php echo e(number_format($doctor->consultation_fee, 0, ',', '.')); ?> đ</strong>
+                    (sẽ được cộng thêm vào số tiền thanh toán cùng với phí dịch vụ).
+                </small>
             </div>
 
             <div class="row">
@@ -109,6 +115,5 @@ unset($__errorArgs, $__bag); ?>
 </div>
 </div>
 <?php $__env->stopSection(); ?>
-
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\DACN\WEBSITE_BENH_VIEN\resources\views/patient/appointments/create.blade.php ENDPATH**/ ?>

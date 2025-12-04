@@ -15,10 +15,11 @@
                 <div class="card h-100 border-0 shadow-sm hover-shadow">
                     <?php if($post->image): ?>
                         <a href="<?php echo e(route('posts.show', $post->id)); ?>">
-                            <img src="<?php echo e(asset('storage/' . $post->image)); ?>" 
+                            <img src="<?php echo e($post->image); ?>" 
                                  class="card-img-top" 
                                  alt="<?php echo e($post->title); ?>"
-                                 style="height: 200px; object-fit: cover;">
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.style.display='none'">
                         </a>
                     <?php endif; ?>
                     <div class="card-body">
@@ -28,7 +29,7 @@
 
                             </a>
                         </h5>
-                        <p class="card-text text-muted"><?php echo e(Str::limit(strip_tags($post->content), 150)); ?></p>
+                        <p class="card-text text-muted"><?php echo e(Str::limit(strip_tags(html_entity_decode($post->content, ENT_QUOTES, 'UTF-8')), 150)); ?></p>
                         <div class="d-flex justify-content-between align-items-center mt-auto">
                             <small class="text-muted">
                                 <i class="bi bi-person"></i> <?php echo e($post->author->name); ?>

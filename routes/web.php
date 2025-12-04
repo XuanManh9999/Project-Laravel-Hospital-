@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -14,12 +14,18 @@ use App\Http\Controllers\Patient\PatientController;
 use App\Http\Controllers\Payment\VNPayController;
 use App\Http\Controllers\Session\HeartbeatController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ServicePublicController;
+use App\Http\Controllers\DoctorsPublicController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+// Public services & doctors routes
+Route::get('/services', [ServicePublicController::class, 'index'])->name('services.index');
+Route::get('/doctors', [DoctorsPublicController::class, 'index'])->name('public.doctors.index');
 
 // Public post routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -47,7 +53,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('users', UserController::class);
     
     // Service management
-    Route::resource('services', ServiceController::class);
+    Route::resource('services', AdminServiceController::class);
     
     // Post management
     Route::resource('posts', AdminPostController::class);
@@ -117,4 +123,3 @@ Route::middleware('auth')->prefix('vnpay')->name('vnpay.')->group(function () {
 });
 
 Route::middleware('auth')->post('/session/heartbeat', HeartbeatController::class)->name('session.heartbeat');
-

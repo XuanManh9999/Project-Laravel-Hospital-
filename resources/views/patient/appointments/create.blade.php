@@ -28,6 +28,12 @@
                 @error('service_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+
+                <small class="text-muted d-block mt-2">
+                    <i class="bi bi-info-circle"></i>
+                    Phí tư vấn bác sĩ: <strong>{{ number_format($doctor->consultation_fee, 0, ',', '.') }} đ</strong>
+                    (sẽ được cộng thêm vào số tiền thanh toán cùng với phí dịch vụ).
+                </small>
             </div>
 
             <div class="row">
@@ -67,4 +73,3 @@
 </div>
 </div>
 @endsection
-
