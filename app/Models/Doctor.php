@@ -28,5 +28,16 @@ class Doctor extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function getAvatarAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (preg_match('/^(https?:\/\/|data:)/i', $value)) {
+            return $value;
+        }
+        return asset('storage/' . $value);
+    }
 }
 

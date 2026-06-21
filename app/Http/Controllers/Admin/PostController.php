@@ -44,11 +44,17 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published',
         ]);
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
+
         $validated['author_id'] = auth()->id();
+        $validated['image'] = $imagePath;
 
         Post::create($validated);
 
@@ -68,9 +74,19 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published',
         ]);
+
+        $imagePath = $post->getRawOriginal('image');
+        if ($request->hasFile('image')) {
+            if ($imagePath && !preg_match('/^(https?:\/\/|data:)/i', $imagePath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($imagePath);
+            }
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
+
+        $validated['image'] = $imagePath;
 
         $post->update($validated);
 

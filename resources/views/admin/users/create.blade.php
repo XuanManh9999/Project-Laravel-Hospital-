@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.users.store') }}">
+        <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -71,9 +71,12 @@
 
             <div id="doctorFields" style="display: none;">
                 <div class="mb-3">
-                    <label class="form-label">Avatar (URL)</label>
-                    <input type="url" class="form-control" name="avatar" value="{{ old('avatar') }}" placeholder="https://example.com/avatar.jpg">
-                    <small class="form-text text-muted">Nhập URL hình ảnh avatar từ internet</small>
+                    <label class="form-label">Ảnh đại diện (Avatar)</label>
+                    <input type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
+                    @error('avatar')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị (Dưới 2MB)</small>
                 </div>
 
                 <div class="row">

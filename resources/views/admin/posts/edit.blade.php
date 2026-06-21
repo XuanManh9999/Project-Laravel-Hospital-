@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.posts.update', $post->id) }}" id="postForm">
+        <form method="POST" action="{{ route('admin.posts.update', $post->id) }}" id="postForm" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -35,15 +35,16 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Hình ảnh (URL)</label>
-                <input type="url" class="form-control @error('image') is-invalid @enderror" 
-                       name="image" value="{{ old('image', $post->image) }}" placeholder="https://example.com/image.jpg">
+                <label class="form-label">Hình ảnh đại diện bài viết</label>
+                <input type="file" class="form-control @error('image') is-invalid @enderror" 
+                       name="image" accept="image/*">
                 @error('image')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                <small class="form-text text-muted">Nhập URL hình ảnh từ internet</small>
+                <small class="form-text text-muted">Tải hình ảnh trực tiếp từ thiết bị (Dưới 2MB)</small>
                 @if($post->image)
                     <div class="mt-2">
+                        <p class="text-muted small mb-1">Ảnh hiện tại:</p>
                         <img src="{{ $post->image }}" alt="Current image" class="img-thumbnail" style="max-height: 200px; max-width: 100%; object-fit: cover;" onerror="this.style.display='none'">
                     </div>
                 @endif

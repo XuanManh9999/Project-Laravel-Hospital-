@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.users.update', $user->id) }}">
+        <form method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -71,11 +71,15 @@
                 <h5 class="mb-3">Thông tin Bác sĩ</h5>
                 
                 <div class="mb-3">
-                    <label class="form-label">Avatar (URL)</label>
-                    <input type="url" class="form-control" name="avatar" value="{{ old('avatar', $user->doctor->avatar) }}" placeholder="https://example.com/avatar.jpg">
-                    <small class="form-text text-muted">Nhập URL hình ảnh avatar từ internet</small>
+                    <label class="form-label">Ảnh đại diện (Avatar)</label>
+                    <input type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
+                    @error('avatar')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị (Dưới 2MB)</small>
                     @if($user->doctor->avatar)
                         <div class="mt-2">
+                            <p class="text-muted small mb-1">Ảnh hiện tại:</p>
                             <img src="{{ $user->doctor->avatar }}" alt="Current avatar" class="img-thumbnail" style="max-height: 150px; max-width: 150px; object-fit: cover; border-radius: 50%;" onerror="this.style.display='none'">
                         </div>
                     @endif

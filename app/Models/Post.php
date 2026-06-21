@@ -21,5 +21,16 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'author_id');
     }
+
+    public function getImageAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (preg_match('/^(https?:\/\/|data:)/i', $value)) {
+            return $value;
+        }
+        return asset('storage/' . $value);
+    }
 }
 

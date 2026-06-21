@@ -39,7 +39,7 @@ class DoctorController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
-            'avatar' => 'nullable|url|max:500',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'specialization' => 'required|string|max:255',
             'experience' => 'nullable|integer|min:0',
             'qualification' => 'nullable|string|max:255',
@@ -57,14 +57,23 @@ class DoctorController extends Controller
                 'address' => $validated['address'] ?? null,
             ]);
 
+            $avatarPath = $doctor->getRawOriginal('avatar');
+            if ($request->hasFile('avatar')) {
+                if ($avatarPath && !preg_match('/^(https?:\/\/|data:)/i', $avatarPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($avatarPath);
+                }
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            }
+
             $doctor->update([
-                'avatar' => $validated['avatar'] ?? null,
+                'avatar' => $avatarPath,
                 'specialization' => $validated['specialization'],
                 'experience' => $validated['experience'] ?? 0,
                 'qualification' => $validated['qualification'] ?? null,
                 'bio' => $validated['bio'] ?? null,
                 'consultation_fee' => $validated['consultation_fee'] ?? 0,
             ]);
+
 
             \DB::commit();
 

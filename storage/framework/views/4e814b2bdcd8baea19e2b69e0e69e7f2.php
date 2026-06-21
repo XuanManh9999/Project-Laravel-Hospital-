@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="<?php echo e(route('admin.users.update', $user->id)); ?>">
+        <form method="POST" action="<?php echo e(route('admin.users.update', $user->id)); ?>" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
             <?php echo method_field('PUT'); ?>
 
@@ -113,11 +113,29 @@ unset($__errorArgs, $__bag); ?>
                 <h5 class="mb-3">Thông tin Bác sĩ</h5>
                 
                 <div class="mb-3">
-                    <label class="form-label">Avatar (URL)</label>
-                    <input type="url" class="form-control" name="avatar" value="<?php echo e(old('avatar', $user->doctor->avatar)); ?>" placeholder="https://example.com/avatar.jpg">
-                    <small class="form-text text-muted">Nhập URL hình ảnh avatar từ internet</small>
+                    <label class="form-label">Ảnh đại diện (Avatar)</label>
+                    <input type="file" class="form-control <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="avatar" accept="image/*">
+                    <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị (Dưới 2MB)</small>
                     <?php if($user->doctor->avatar): ?>
                         <div class="mt-2">
+                            <p class="text-muted small mb-1">Ảnh hiện tại:</p>
                             <img src="<?php echo e($user->doctor->avatar); ?>" alt="Current avatar" class="img-thumbnail" style="max-height: 150px; max-width: 150px; object-fit: cover; border-radius: 50%;" onerror="this.style.display='none'">
                         </div>
                     <?php endif; ?>

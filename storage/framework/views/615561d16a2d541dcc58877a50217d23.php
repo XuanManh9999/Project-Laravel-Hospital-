@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="<?php echo e(route('admin.posts.store')); ?>" id="postForm">
+        <form method="POST" action="<?php echo e(route('admin.posts.store')); ?>" id="postForm" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
 
             <div class="mb-3">
@@ -62,8 +62,8 @@ unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Hình ảnh (URL)</label>
-                <input type="url" class="form-control <?php $__errorArgs = ['image'];
+                <label class="form-label">Hình ảnh đại diện bài viết</label>
+                <input type="file" class="form-control <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -71,7 +71,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                       name="image" value="<?php echo e(old('image')); ?>" placeholder="https://example.com/image.jpg">
+                       name="image" accept="image/*">
                 <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -82,7 +82,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                <small class="form-text text-muted">Nhập URL hình ảnh từ internet</small>
+                <small class="form-text text-muted">Tải hình ảnh trực tiếp từ thiết bị (Dưới 2MB)</small>
             </div>
 
             <div class="mb-3">

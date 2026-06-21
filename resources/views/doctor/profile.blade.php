@@ -50,7 +50,7 @@
                     <div class="tab-content">
                         <!-- Profile Info Tab -->
                         <div class="tab-pane fade show active" id="profile-info">
-                            <form method="POST" action="{{ route('doctor.profile.update') }}">
+                            <form method="POST" action="{{ route('doctor.profile.update') }}" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
@@ -88,13 +88,17 @@
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">
-                                        <i class="bi bi-image"></i> Avatar (URL)
+                                        <i class="bi bi-image"></i> Ảnh đại diện (Avatar)
                                     </label>
-                                    <input type="url" class="form-control" name="avatar" value="{{ $doctor->avatar }}" placeholder="https://example.com/avatar.jpg">
-                                    <small class="form-text text-muted">Nhập URL hình ảnh avatar của bạn</small>
+                                    <input type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
+                                    @error('avatar')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị của bạn (Dưới 2MB)</small>
                                     @if($doctor->avatar)
                                         <div class="mt-2">
-                                            <img src="{{ $doctor->avatar }}" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                            <p class="text-muted small mb-1">Ảnh hiện tại:</p>
+                                            <img src="{{ $doctor->avatar }}" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover; border: 1px solid #dee2e6;">
                                         </div>
                                     @endif
                                 </div>

@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="<?php echo e(route('admin.users.store')); ?>">
+        <form method="POST" action="<?php echo e(route('admin.users.store')); ?>" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
 
             <div class="row">
@@ -127,9 +127,26 @@ unset($__errorArgs, $__bag); ?>
 
             <div id="doctorFields" style="display: none;">
                 <div class="mb-3">
-                    <label class="form-label">Avatar (URL)</label>
-                    <input type="url" class="form-control" name="avatar" value="<?php echo e(old('avatar')); ?>" placeholder="https://example.com/avatar.jpg">
-                    <small class="form-text text-muted">Nhập URL hình ảnh avatar từ internet</small>
+                    <label class="form-label">Ảnh đại diện (Avatar)</label>
+                    <input type="file" class="form-control <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="avatar" accept="image/*">
+                    <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị (Dưới 2MB)</small>
                 </div>
 
                 <div class="row">

@@ -50,7 +50,7 @@
                     <div class="tab-content">
                         <!-- Profile Info Tab -->
                         <div class="tab-pane fade show active" id="profile-info">
-                            <form method="POST" action="<?php echo e(route('doctor.profile.update')); ?>">
+                            <form method="POST" action="<?php echo e(route('doctor.profile.update')); ?>" enctype="multipart/form-data">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('PUT'); ?>
 
@@ -88,13 +88,31 @@
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">
-                                        <i class="bi bi-image"></i> Avatar (URL)
+                                        <i class="bi bi-image"></i> Ảnh đại diện (Avatar)
                                     </label>
-                                    <input type="url" class="form-control" name="avatar" value="<?php echo e($doctor->avatar); ?>" placeholder="https://example.com/avatar.jpg">
-                                    <small class="form-text text-muted">Nhập URL hình ảnh avatar của bạn</small>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="avatar" accept="image/*">
+                                    <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    <small class="form-text text-muted">Tải ảnh đại diện trực tiếp từ thiết bị của bạn (Dưới 2MB)</small>
                                     <?php if($doctor->avatar): ?>
                                         <div class="mt-2">
-                                            <img src="<?php echo e($doctor->avatar); ?>" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                            <p class="text-muted small mb-1">Ảnh hiện tại:</p>
+                                            <img src="<?php echo e($doctor->avatar); ?>" alt="Avatar preview" class="rounded" style="max-width: 150px; max-height: 150px; object-fit: cover; border: 1px solid #dee2e6;">
                                         </div>
                                     <?php endif; ?>
                                 </div>
